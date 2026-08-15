@@ -1,0 +1,2 @@
+# Match .patch files to their language
+*.cpp.patch linguist-language=C++

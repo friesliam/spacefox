@@ -1,0 +1,10 @@
+{
+    "name": "SpaceFox",
+    "version": "0.1.0",
+    "firefox": {
+        "repository": "https://github.com/mozilla-firefox/firefox.git",
+        "tag": "FIREFOX_153_0esr_RELEASE",
+        "branch": "esr153",
+        "custom_branch": "spacefox"
+    }
+}

@@ -1,0 +1,38 @@
+# https://firefox-source-docs.mozilla.org/setup/configuring_build_options.html
+# ./mach configure -- --help
+
+
+
+#export MOZ_SOURCE_REPO=https://github.com/friesliam/spacefox
+# Need to set MOZ_SOURCE_CHANGESET
+
+
+
+# Build directory
+mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/obj-spacefox
+
+# Software to build
+ac_add_options --enable-project=browser
+
+# Naming
+ac_add_options --with-app-basename=SpaceFox
+ac_add_options --with-app-name=SpaceFox
+#export MOZ_APP_DISPLAYNAME=SpaceFox # now set in spacefox/browser/branding/spacefox/configure.sh
+export MOZ_APP_REMOTINGNAME=spacefox
+
+# Avoid Nightly compilations
+# See browser/app/profile/channel-prefs.js
+ac_add_options --enable-update-channel=release
+mk_add_options MOZ_UPDATE_CHANNEL=release
+ac_add_options --with-branding=spacefox/browser/branding/spacefox
+
+# Disable the updater (TODO: temporary)
+ac_add_options --disable-updater
+
+# Optimizations
+ac_add_options --enable-jit
+ac_add_options --enable-release
+
+# Config
+export MOZ_TELEMETRY_REPORTING=
+export MOZ_REQUIRE_SIGNING=

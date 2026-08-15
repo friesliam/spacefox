@@ -1,0 +1,56 @@
+#!/usr/bin/env python3
+
+import json
+import os
+import subprocess
+import sys
+
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+FIREFOX_SRC = os.path.join(SCRIPT_DIR, "firefox")
+PKG_DATA = os.path.join(SCRIPT_DIR, "spacefox.json");
+
+
+def cmd(*args: str):
+    process = subprocess.Popen(args, cwd=FIREFOX_SRC)
+    _ = process.wait()
+
+
+def main():
+    match sys.argv[1:]:
+        case ["run"]:
+            cmd("./mach", "run")
+
+        case ["build"]:
+            cmd("./mach", "build", "-j6")
+
+        case ["build", "faster"]:
+            cmd("./mach", "build", "faster")
+
+        case ["clone"]:
+            with open(PKG_DATA, "r") as file:
+                pkg_data = json.load(file)
+            repo = pkg_data["firefox"]["repository"]
+            tag = pkg_data["firefox"]["tag"]
+            spacefox_branch = pkg_data["firefox"]["custom_branch"]
+            cmd("git", "init", "-b", "main")
+            cmd("git", "remote", "add", "upstream", repo)
+            cmd("git", "fetch", "--depth", "1", "upstream", f"refs/tags/{tag}")
+            cmd("git", "switch", "-C", "main", "FETCH_HEAD")
+            cmd("git", "switch", "-c", spacefox_branch)
+            # git config suggested by mach bootstrap
+            cmd("git", "config", "core.untrackedCache", "true")
+            cmd("git", "config", "--unset", "core.fsMonitor")
+
+        case ["bootstrap"]:
+            cmd("./mach", "bootstrap")
+
+        case []:
+            print("No arguments provided.")
+
+        case [*_args]:
+            print("Unknown arguments.")
+
+
+if __name__ == "__main__":
+    main()
