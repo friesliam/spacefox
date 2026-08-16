@@ -33,6 +33,16 @@ ac_add_options --disable-updater
 ac_add_options --enable-jit
 ac_add_options --enable-release
 
-# Config
+# Remove data tracking
 export MOZ_TELEMETRY_REPORTING=
+
+
+
+# See: toolkit/modules/AppConstants.sys.mjs
+
+# Preferences
 export MOZ_REQUIRE_SIGNING=
+
+# Privacy
+export MOZ_NORMANDY=
+export MOZ_DATA_REPORTING=

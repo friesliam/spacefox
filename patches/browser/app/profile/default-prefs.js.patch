@@ -1,0 +1,517 @@
+From 01525fd0cf3232a92833302e9545e32ed8dc7011 Mon Sep 17 00:00:00 2001
+From: Liam Fries <contributors@spacefox.invalid>
+Date: Sat, 15 Aug 2026 22:29:41 -0400
+Subject: [PATCH] Configured the browser's default about:config preferences
+
+---
+ browser/app/profile/firefox.js | 203 +++++++++++++++++----------------
+ 1 file changed, 105 insertions(+), 98 deletions(-)
+
+diff --git a/browser/app/profile/firefox.js b/browser/app/profile/firefox.js
+index d7f3045f1f..7266284734 100644
+--- a/browser/app/profile/firefox.js
++++ b/browser/app/profile/firefox.js
+@@ -69,12 +69,12 @@ pref("extensions.webextensions.remote", true);
+ // Disable the deprecated filter applied to the pageAction icon on all channels.
+ pref("extensions.webextensions.pageActionIconDarkModeFilter.enabled", false);
+ 
+-// Require signed add-ons by default
+-pref("extensions.langpacks.signatures.required", true);
+-pref("xpinstall.signatures.required", true);
++// Do not require add-ons to be signed by default
++pref("extensions.langpacks.signatures.required", false);
++pref("xpinstall.signatures.required", false);
+ 
+ // Enable data collection permissions.
+-pref("extensions.dataCollectionPermissions.enabled", true);
++pref("extensions.dataCollectionPermissions.enabled", false);
+ 
+ // Dictionary download preference
+ pref("browser.dictionaries.download.url", "https://addons.mozilla.org/%LOCALE%/firefox/language-tools/");
+@@ -240,7 +240,7 @@ pref("lightweightThemes.getMoreURL", "https://addons.mozilla.org/%LOCALE%/firefo
+ #endif
+ 
+ // UI tour experience.
+-pref("browser.uitour.enabled", true);
++pref("browser.uitour.enabled", false);
+ pref("browser.uitour.loglevel", "Error");
+ pref("browser.uitour.url", "https://www.mozilla.org/%LOCALE%/firefox/%VERSION%/tour/");
+ // How long to show a Hearbeat survey (two hours, in seconds)
+@@ -262,11 +262,11 @@ pref("browser.touchmode.auto", true);
+ pref("browser.compactmode.show", false);
+ 
+ // At startup, check if we're the default browser and prompt user if not.
+-pref("browser.shell.checkDefaultBrowser", true);
++pref("browser.shell.checkDefaultBrowser", false);
+ pref("browser.shell.shortcutFavicons",true);
+ pref("browser.shell.mostRecentDateSetAsDefault", "");
+ pref("browser.shell.skipDefaultBrowserCheckOnFirstRun", true);
+-pref("browser.shell.didSkipDefaultBrowserCheckOnFirstRun", false);
++pref("browser.shell.didSkipDefaultBrowserCheckOnFirstRun", true);
+ pref("browser.shell.defaultBrowserCheckCount", 0);
+ #if defined(XP_WIN)
+ // Attempt to set the default browser on Windows 10 using the UserChoice registry keys,
+@@ -306,16 +306,17 @@ pref("browser.shell.setDefaultPDFHandler.attemptWaitTimeMs", 30000);
+ 
+ // 0 = blank, 1 = home (browser.startup.homepage), 2 = last visited page, 3 = resume previous browser session
+ // The behavior of option 3 is detailed at: http://wiki.mozilla.org/Session_Restore
+-pref("browser.startup.page",                1);
++pref("browser.startup.page",                3);
+ pref("browser.startup.homepage",            "about:home");
+-pref("browser.startup.homepage.abouthome_cache.enabled", true);
++pref("browser.startup.homepage.abouthome_cache.enabled", false);
+ pref("browser.startup.homepage.abouthome_cache.loglevel", "Warn");
+ 
+ // Whether we should skip the homepage when opening the first-run page
+-pref("browser.startup.firstrunSkipsHomepage", true);
++pref("browser.startup.firstrunSkipsHomepage", false);
+ 
+ // Whether we should show the session-restore infobar on startup
+-pref("browser.startup.couldRestoreSession.count", 0);
++// https://support.mozilla.org/en-US/questions/1423347
++pref("browser.startup.couldRestoreSession.count", -1);
+ 
+ // Show a skeleton UI window prior to loading libxul. Only visible for windows
+ // users as it is not implemented anywhere else.
+@@ -531,7 +532,7 @@ pref("browser.urlbar.quicksuggest.online.available", false);
+ // [2] browser.urlbar.quicksuggest.online.available
+ // [3] browser.urlbar.merino.ohttpConfigURL
+ // [4] browser.urlbar.merino.ohttpRelayURL
+-pref("browser.urlbar.quicksuggest.online.enabled", true, sticky);
++pref("browser.urlbar.quicksuggest.online.enabled", false, sticky);
+ 
+ // Whether the Firefox Suggest contextual opt-in result is enabled.
+ pref("browser.urlbar.quicksuggest.contextualOptIn", false);
+@@ -880,7 +881,7 @@ pref("browser.download.viewableInternally.enabledTypes", "xml,svg,webp,avif,jxl"
+ 
+ // This controls whether the button is automatically shown/hidden depending
+ // on whether there are downloads to show.
+-pref("browser.download.autohideButton", true);
++pref("browser.download.autohideButton", false);
+ 
+ // Controls whether to open the downloads panel every time a download begins.
+ // The first download ever run in a new profile will still open the panel.
+@@ -921,7 +922,7 @@ pref("browser.search.separatePrivateDefault.ui.enabled", false);
+ pref("browser.search.separatePrivateDefault.ui.banner.max", 0);
+ 
+ // Enables search SERP telemetry page categorization.
+-pref("browser.search.serpEventTelemetryCategorization.enabled", true);
++pref("browser.search.serpEventTelemetryCategorization.enabled", false);
+ 
+ // A count of Glean SERP categorization event metrics that have been recorded
+ // but not yet submitted in a ping. Needed to prevent sending a ping with only
+@@ -930,7 +931,8 @@ pref("browser.search.serpMetricsRecordedCounter", 0);
+ 
+ // Search Bar removal from the toolbar for users who haven’t used it in 120
+ // days
+-pref("browser.search.widget.removeAfterDaysUnused", 120);
++// Remove immediately
++pref("browser.search.widget.removeAfterDaysUnused", 0);
+ 
+ // Feature gate for searchbar based on urlbar code.
+ pref("browser.search.widget.new", true);
+@@ -1054,14 +1056,14 @@ pref("browser.tabs.insertAfterCurrent", false);
+ // results in the tabbar scrolling back to the beginning. Setting
+ // |insertAfterCurrentExceptPinned| to true will add tabs at the end of the
+ // tabbar.
+-pref("browser.tabs.insertAfterCurrentExceptPinned", false);
++pref("browser.tabs.insertAfterCurrentExceptPinned", true);
+ pref("browser.tabs.warnOnClose", false);
+-pref("browser.tabs.warnOnCloseOtherTabs", true);
++pref("browser.tabs.warnOnCloseOtherTabs", false);
+ pref("browser.tabs.warnOnOpen", true);
+ pref("browser.tabs.maxOpenBeforeWarn", 15);
+ pref("browser.tabs.loadDivertedInBackground", false);
+ pref("browser.tabs.loadBookmarksInBackground", false);
+-pref("browser.tabs.loadBookmarksInTabs", false);
++pref("browser.tabs.loadBookmarksInTabs", true);
+ pref("browser.tabs.tabClipWidth", 140);
+ pref("browser.tabs.tabMinWidth", 76);
+ 
+@@ -1095,7 +1097,7 @@ pref("browser.tabs.remote.separatePrivilegedMozillaWebContentProcess", true);
+ #ifdef NIGHTLY_BUILD
+ pref("browser.tabs.tooltipsShowPidAndActiveness", true);
+ #else
+-pref("browser.tabs.tooltipsShowPidAndActiveness", false);
++pref("browser.tabs.tooltipsShowPidAndActiveness", true);
+ #endif
+ 
+ pref("browser.tabs.hoverPreview.enabled", true);
+@@ -1216,8 +1218,8 @@ pref("browser.tabs.allow_transparent_browser", false);
+ // Scripts & Windows prefs
+ pref("dom.disable_open_during_load",              true);
+ 
+-// allow JS to move and resize existing windows
+-pref("dom.disable_window_move_resize",            false);
++// Do not allow JS to move and resize existing windows
++pref("dom.disable_window_move_resize",            true);
+ // prevent JS from monkeying with window focus, etc
+ pref("dom.disable_window_flip",                   true);
+ 
+@@ -1407,9 +1409,9 @@ pref("accessibility.typeaheadfind.flashBar", 1);
+ // Whether we had to hide the "Firefox Labs" section because it would be empty.
+ pref("browser.preferences.experimental.hidden", false);
+ // Whether we show the "More from Mozilla" section.
+-pref("browser.preferences.moreFromMozilla", true);
++pref("browser.preferences.moreFromMozilla", false);
+ // Whether we show the "AI Controls" pane.
+-pref("browser.preferences.aiControls", true);
++pref("browser.preferences.aiControls", false);
+ // Whether to show unavailable AI controls regardless of region/locale
+ // restrictions. This is intended for localizers to be able to see the strings.
+ pref("browser.preferences.aiControls.showUnavailable", false);
+@@ -1675,7 +1677,7 @@ pref("services.sync.prefs.sync.accessibility.browsewithcaret", true);
+ pref("services.sync.prefs.sync.accessibility.typeaheadfind", true);
+ pref("services.sync.prefs.sync.accessibility.typeaheadfind.linksonly", true);
+ pref("services.sync.prefs.sync.addons.ignoreUserEnabledChanges", true);
+-pref("services.sync.prefs.sync.app.shield.optoutstudies.enabled", true);
++pref("services.sync.prefs.sync.app.shield.optoutstudies.enabled", false);
+ // The addons prefs related to repository verification are intentionally
+ // not synced for security reasons. If a system is compromised, a user
+ // could weaken the pref locally, install an add-on from an untrusted
+@@ -1683,23 +1685,23 @@ pref("services.sync.prefs.sync.app.shield.optoutstudies.enabled", true);
+ // uncompromised Sync-connected devices.
+ pref("services.sync.prefs.sync.browser.contentblocking.category", true);
+ pref("services.sync.prefs.sync.browser.contentblocking.features.strict", true);
+-pref("services.sync.prefs.sync.browser.crashReports.unsubmittedCheck.autoSubmit2", true);
++pref("services.sync.prefs.sync.browser.crashReports.unsubmittedCheck.autoSubmit2", false);
+ pref("services.sync.prefs.sync.browser.ctrlTab.sortByRecentlyUsed", true);
+ pref("services.sync.prefs.sync.browser.download.useDownloadDir", true);
+-pref("services.sync.prefs.sync.browser.firefox-view.feature-tour", true);
++pref("services.sync.prefs.sync.browser.firefox-view.feature-tour", false);
+ pref("services.sync.prefs.sync.browser.formfill.enable", true);
+ pref("services.sync.prefs.sync.browser.link.open_newwindow", true);
+ pref("services.sync.prefs.sync.browser.menu.showViewImageInfo", true);
+ pref("services.sync.prefs.sync.browser.newtabpage.activity-stream.asrouter.userprefs.cfr.addons", true);
+ pref("services.sync.prefs.sync.browser.newtabpage.activity-stream.asrouter.userprefs.cfr.features", true);
+ pref("services.sync.prefs.sync.browser.newtabpage.activity-stream.showSearch", true);
+-pref("services.sync.prefs.sync.browser.newtabpage.activity-stream.showSponsored", true);
+-pref("services.sync.prefs.sync.browser.newtabpage.activity-stream.showSponsoredTopSites", true);
+-pref("services.sync.prefs.sync.browser.newtabpage.activity-stream.feeds.topsites", true);
++pref("services.sync.prefs.sync.browser.newtabpage.activity-stream.showSponsored", false);
++pref("services.sync.prefs.sync.browser.newtabpage.activity-stream.showSponsoredTopSites", false);
++pref("services.sync.prefs.sync.browser.newtabpage.activity-stream.feeds.topsites", false);
+ pref("services.sync.prefs.sync.browser.newtabpage.activity-stream.topSitesRows", true);
+-pref("services.sync.prefs.sync.browser.newtabpage.activity-stream.feeds.section.topstories", true);
++pref("services.sync.prefs.sync.browser.newtabpage.activity-stream.feeds.section.topstories", false);
+ pref("services.sync.prefs.sync.browser.newtabpage.activity-stream.section.topstories.rows", true);
+-pref("services.sync.prefs.sync.browser.newtabpage.activity-stream.feeds.section.highlights", true);
++pref("services.sync.prefs.sync.browser.newtabpage.activity-stream.feeds.section.highlights", false);
+ // Some linux distributions disable all highlights by default.
+ pref("services.sync.prefs.sync-seen.browser.newtabpage.activity-stream.section.highlights", false);
+ pref("services.sync.prefs.sync.browser.newtabpage.activity-stream.section.highlights.includeVisited", true);
+@@ -1708,7 +1710,7 @@ pref("services.sync.prefs.sync.browser.newtabpage.activity-stream.section.highli
+ pref("services.sync.prefs.sync.browser.newtabpage.activity-stream.section.highlights.rows", true);
+ pref("services.sync.prefs.sync.browser.newtabpage.enabled", true);
+ pref("services.sync.prefs.sync.browser.newtabpage.pinned", true);
+-pref("services.sync.prefs.sync.browser.pdfjs.feature-tour", true);
++pref("services.sync.prefs.sync.browser.pdfjs.feature-tour", false);
+ pref("services.sync.prefs.sync.browser.safebrowsing.downloads.enabled", true);
+ pref("services.sync.prefs.sync.browser.safebrowsing.downloads.remote.block_potentially_unwanted", true);
+ pref("services.sync.prefs.sync.browser.safebrowsing.malware.enabled", true);
+@@ -1716,7 +1718,7 @@ pref("services.sync.prefs.sync.browser.safebrowsing.phishing.enabled", true);
+ pref("services.sync.prefs.sync.browser.search.update", true);
+ pref("services.sync.prefs.sync.browser.startup.homepage", true);
+ pref("services.sync.prefs.sync.browser.startup.page", true);
+-pref("services.sync.prefs.sync.browser.startup.upgradeDialog.enabled", true);
++pref("services.sync.prefs.sync.browser.startup.upgradeDialog.enabled", false);
+ pref("services.sync.prefs.sync.browser.tabs.loadInBackground", true);
+ pref("services.sync.prefs.sync.browser.tabs.warnOnClose", true);
+ pref("services.sync.prefs.sync.browser.tabs.warnOnOpen", true);
+@@ -1821,9 +1823,9 @@ pref("prompts.defaultModalType", 3);
+ // Whether to use the discrete Top Sites component.
+ pref("browser.topsites.component.enabled", false);
+ 
+-pref("browser.topsites.useRemoteSetting", true);
+-// Fetch sponsored Top Sites from Mozilla Tiles Service (Contile)
+-pref("browser.topsites.contile.enabled", true);
++pref("browser.topsites.useRemoteSetting", false);
++// Do not fetch sponsored Top Sites from Mozilla Tiles Service (Contile)
++pref("browser.topsites.contile.enabled", false);
+ pref("browser.topsites.contile.endpoint", "https://contile.services.mozilla.com/v1/tiles");
+ 
+ // The base URL for the Quick Suggest anonymizing proxy. To make a request to
+@@ -1872,21 +1874,23 @@ pref("browser.newtabpage.activity-stream.mobileDownloadModal.variant-b", false);
+ pref("browser.newtabpage.activity-stream.mobileDownloadModal.variant-c", false);
+ 
+ // Mozilla Ad Routing Service (MARS) unified ads service
+-pref("browser.newtabpage.activity-stream.unifiedAds.tiles.enabled", true);
+-pref("browser.newtabpage.activity-stream.unifiedAds.spocs.enabled", true);
+-pref("browser.newtabpage.activity-stream.unifiedAds.endpoint", "https://ads.mozilla.org/");
++pref("browser.newtabpage.activity-stream.unifiedAds.tiles.enabled", false);
++pref("browser.newtabpage.activity-stream.unifiedAds.spocs.enabled", false);
++// Commented out:
++//pref("browser.newtabpage.activity-stream.unifiedAds.endpoint", "https://ads.mozilla.org/");
+ pref("browser.newtabpage.activity-stream.unifiedAds.adsFeed.enabled", false);
+-pref("browser.newtabpage.activity-stream.unifiedAds.ohttp.enabled", true);
++pref("browser.newtabpage.activity-stream.unifiedAds.ohttp.enabled", false);
+ 
+ // Weather widget for newtab
+-pref("browser.newtabpage.activity-stream.showWeather", true);
+-pref("browser.newtabpage.activity-stream.weather.query", "");
+-pref("browser.newtabpage.activity-stream.weather.display", "detailed");
++pref("browser.newtabpage.activity-stream.showWeather", false);
++// Commented out:
++//pref("browser.newtabpage.activity-stream.weather.query", "");
++//pref("browser.newtabpage.activity-stream.weather.display", "detailed");
+ 
+-pref("browser.newtabpage.activity-stream.images.smart", true);
++pref("browser.newtabpage.activity-stream.images.smart", false);
+ 
+ // enable location search for newtab weather widget
+-pref("browser.newtabpage.activity-stream.weather.locationSearchEnabled", true);
++pref("browser.newtabpage.activity-stream.weather.locationSearchEnabled", false);
+ 
+ // List of regions that get weather by default.
+ pref("browser.newtabpage.activity-stream.discoverystream.region-weather-config", "AT,BE,BG,CA,CH,CY,CZ,DE,DK,EE,ES,FI,FR,GB,GR,HR,HU,IE,IS,IT,LI,LT,LV,MT,NL,NO,PL,PT,RO,SE,SI,SK,US");
+@@ -1895,7 +1899,7 @@ pref("browser.newtabpage.activity-stream.discoverystream.region-weather-config",
+ pref("browser.newtabpage.activity-stream.discoverystream.locale-weather-config", "bg,cs,da,de,el,en-CA,en-GB,en-US,es-ES,et,fi,fr,hr,hu,is,it,lv,nb-NO,nl,pl,pt-PT,ro,sk,sl,sv-SE,tr");
+ 
+ // Promo card visibility
+-pref("browser.newtabpage.activity-stream.discoverystream.promoCard.visible", true);
++pref("browser.newtabpage.activity-stream.discoverystream.promoCard.visible", false);
+ 
+ // Preference to enable wallpaper selection in the Customize Menu of new tab page
+ pref("browser.newtabpage.activity-stream.newtabWallpapers.enabled", true);
+@@ -1948,7 +1952,7 @@ pref("messaging-system.askForFeedback", true);
+ pref("browser.newtabpage.activity-stream.asrouter.useRemoteL10n", true);
+ 
+ // These prefs control if Discovery Stream is enabled.
+-pref("browser.newtabpage.activity-stream.discoverystream.enabled", true);
++pref("browser.newtabpage.activity-stream.discoverystream.enabled", false);
+ pref("browser.newtabpage.activity-stream.discoverystream.hardcoded-basic-layout", false);
+ pref("browser.newtabpage.activity-stream.discoverystream.hybridLayout.enabled", false);
+ pref("browser.newtabpage.activity-stream.discoverystream.hideCardBackground.enabled", false);
+@@ -2224,30 +2228,32 @@ pref("sidebar.openTabsPanel.enabled", false);
+ 
+ pref("sidebar.notification.badge.aichat", false);
+ 
+-pref("browser.ml.chat.enabled", true);
++pref("browser.ml.chat.enabled", false);
+ pref("browser.ml.chat.hideLocalhost", true);
+ pref("browser.ml.chat.maxLength", 7000);
+-pref("browser.ml.chat.menu", true);
+-pref("browser.ml.chat.page", true);
+-pref("browser.ml.chat.page.footerBadge", true);
+-pref("browser.ml.chat.page.menuBadge", true);
+-pref("browser.ml.chat.prompt.prefix", '{"l10nId":"genai-prompt-prefix-selection"}');
+-pref("browser.ml.chat.prompts.0", '{"id":"summarize","l10nId":"genai-prompts-summarize"}');
+-pref("browser.ml.chat.prompts.1", '{"id":"explain","l10nId":"genai-prompts-explain","targeting":"contentType != \'page\'"}');
+-pref("browser.ml.chat.prompts.3", '{"id":"quiz","l10nId":"genai-prompts-quiz","targeting":"(!provider|regExpMatch(\'gemini\') || region == \'US\') && contentType != \'page\'"}');
+-pref("browser.ml.chat.prompts.4", '{"id":"proofread", "l10nId":"genai-prompts-proofread","targeting":"contentType != \'page\'"}');
+-pref("browser.ml.chat.provider", "");
+-pref("browser.ml.chat.shortcuts", true);
+-pref("browser.ml.chat.shortcuts.custom", true);
+-pref("browser.ml.chat.shortcuts.smartwindow", true);
+-pref("browser.ml.chat.shortcuts.longPress", 60000);
+-pref("browser.ml.chat.shortcut.onboardingMouseoverCount", 0);
+-pref("browser.ml.chat.sidebar", true);
++pref("browser.ml.chat.menu", false);
++pref("browser.ml.chat.page", false);
++pref("browser.ml.chat.page.footerBadge", false);
++pref("browser.ml.chat.page.menuBadge", false);
++// Commented out:
++//pref("browser.ml.chat.prompt.prefix", '{"l10nId":"genai-prompt-prefix-selection"}');
++//pref("browser.ml.chat.prompts.0", '{"id":"summarize","l10nId":"genai-prompts-summarize"}');
++//pref("browser.ml.chat.prompts.1", '{"id":"explain","l10nId":"genai-prompts-explain","targeting":"contentType != \'page\'"}');
++//pref("browser.ml.chat.prompts.3", '{"id":"quiz","l10nId":"genai-prompts-quiz","targeting":"(!provider|regExpMatch(\'gemini\') || region == \'US\') && contentType != \'page\'"}');
++//pref("browser.ml.chat.prompts.4", '{"id":"proofread", "l10nId":"genai-prompts-proofread","targeting":"contentType != \'page\'"}');
++//pref("browser.ml.chat.provider", "");
++pref("browser.ml.chat.shortcuts", false);
++pref("browser.ml.chat.shortcuts.custom", false);
++pref("browser.ml.chat.shortcuts.smartwindow", false);
++// Commented out:
++//pref("browser.ml.chat.shortcuts.longPress", 60000);
++//pref("browser.ml.chat.shortcut.onboardingMouseoverCount", 0);
++pref("browser.ml.chat.sidebar", false);
+ 
+ pref("browser.ml.linkPreview.allowedLanguages", "en");
+ pref("browser.ml.linkPreview.blockListEnabled", true);
+ pref("browser.ml.linkPreview.collapsed", false);
+-pref("browser.ml.linkPreview.enabled", true);
++pref("browser.ml.linkPreview.enabled", false);
+ pref("browser.ml.linkPreview.ignoreMs", 2000);
+ pref("browser.ml.linkPreview.longPress", true);
+ pref("browser.ml.linkPreview.longPressMs", 1000);
+@@ -2278,7 +2284,8 @@ pref("browser.smartwindow.firstrun.explainerURL", "https://www.firefox.com/en-US
+ pref("places.semanticHistory.smartwindow.featureGate", false);
+ 
+ // Smart Window: Merino World Cup Soccer tool call (bug 2038266)
+-pref("browser.smartwindow.worldcup.enabled", true);
++// What is this lol?
++pref("browser.smartwindow.worldcup.enabled", false);
+ pref("browser.smartwindow.worldcup.endpointURL", "https://merino.services.mozilla.com");
+ pref("browser.smartwindow.worldcup.timeoutMs", 2000);
+ 
+@@ -2355,7 +2362,7 @@ pref("identity.fxaccounts.commands.remoteTabManagement.enabled", true);
+ 
+ // Controls whether or not the client association ping has values set on it
+ // when the sync-ui-state:update notification fires.
+-pref("identity.fxaccounts.telemetry.clientAssociationPing.enabled", true);
++pref("identity.fxaccounts.telemetry.clientAssociationPing.enabled", false);
+ 
+ // Note: when media.gmp-*.visible is true, provided we're running on a
+ // supported platform/OS version, the corresponding CDM appears in the
+@@ -2421,21 +2428,21 @@ pref("browser.translations.quickAction.enabled", true);
+ 
+ // Telemetry settings.
+ // Determines if Telemetry pings can be archived locally.
+-pref("toolkit.telemetry.archive.enabled", true);
++pref("toolkit.telemetry.archive.enabled", false);
+ // Enables sending the shutdown ping when Firefox shuts down.
+-pref("toolkit.telemetry.shutdownPingSender.enabled", true);
++pref("toolkit.telemetry.shutdownPingSender.enabled", false);
+ // Enables using the `pingsender` background task.
+ pref("toolkit.telemetry.shutdownPingSender.backgroundtask.enabled", false);
+ // Enables sending the shutdown ping using the pingsender from the first session.
+ pref("toolkit.telemetry.shutdownPingSender.enabledFirstSession", false);
+ // Enables sending a duplicate of the first shutdown ping from the first session.
+-pref("toolkit.telemetry.firstShutdownPing.enabled", true);
++pref("toolkit.telemetry.firstShutdownPing.enabled", false);
+ // Enables sending the 'new-profile' ping on new profiles.
+-pref("toolkit.telemetry.newProfilePing.enabled", true);
++pref("toolkit.telemetry.newProfilePing.enabled", false);
+ // Enables sending 'update' pings on Firefox updates.
+-pref("toolkit.telemetry.updatePing.enabled", true);
++pref("toolkit.telemetry.updatePing.enabled", false);
+ // Enables sending 'bhr' pings when the browser hangs.
+-pref("toolkit.telemetry.bhrPing.enabled", true);
++pref("toolkit.telemetry.bhrPing.enabled", false);
+ 
+ // Enable GMP support in the addon manager.
+ pref("media.gmp-provider.enabled", true);
+@@ -2568,7 +2575,7 @@ pref("browser.send_to_device_locales", "de,en-GB,en-US,es-AR,es-CL,es-ES,es-MX,f
+ pref("browser.vpn_promo.disallowed_regions", "ae,by,cn,cu,iq,ir,kp,om,ru,sd,sy,tm,tr");
+ 
+ // Default to enabling VPN promo messages to be shown when specified and allowed
+-pref("browser.vpn_promo.enabled", true);
++pref("browser.vpn_promo.enabled", false);
+ // Only show vpn card to certain regions. Comma separated string of two letter ISO 3166-1 country codes.
+ // The most recent list of supported countries can be found at https://support.mozilla.org/en-US/kb/mozilla-vpn-countries-available-subscribe
+ // The full lists of supported country codes can also be found at https://github.com/mozilla/bedrock/search?q=VPN_COUNTRY_CODES and https://github.com/mozilla/bedrock/search?q=VPN_MOBILE_SUB_COUNTRY_CODES
+@@ -2588,7 +2595,7 @@ pref("browser.promo.pin.enabled", true);
+ // Set to true for Fx113 (see bug 1808611)
+ pref("browser.promo.cookiebanners.enabled", false);
+ 
+-pref("browser.contentblocking.report.hide_vpn_banner", false);
++pref("browser.contentblocking.report.hide_vpn_banner", true);
+ pref("browser.contentblocking.report.vpn_sub_id", "sub_HrfCZF7VPHzZkA");
+ 
+ pref("browser.contentblocking.report.monitor.url", "https://monitor.firefox.com/?entrypoint=protection_report_monitor&utm_source=about-protections");
+@@ -2685,7 +2692,7 @@ pref("browser.tabs.remote.warmup.maxTabs", 3);
+ pref("browser.tabs.remote.warmup.unloadDelayMs", 2000);
+ 
+ // For the about:tabcrashed page
+-pref("browser.tabs.crashReporting.sendReport", true);
++pref("browser.tabs.crashReporting.sendReport", false);
+ pref("browser.tabs.crashReporting.includeURL", false);
+ 
+ // Enables the "Unload Tab" context menu item
+@@ -2862,20 +2869,18 @@ pref("doh-rollout.clearModeOnShutdown", false);
+ pref("network.trr_ui.fallback_was_checked", true);
+ 
+ // Normandy client preferences
+-pref("app.normandy.api_url", "https://normandy.cdn.mozilla.net/api/v1");
++// Commented out:
++//pref("app.normandy.api_url", "https://normandy.cdn.mozilla.net/api/v1");
+ pref("app.normandy.dev_mode", false);
+-pref("app.normandy.enabled", true);
++pref("app.normandy.enabled", false);
+ pref("app.normandy.first_run", true);
+ pref("app.normandy.logging.level", 50); // Warn
+ pref("app.normandy.run_interval_seconds", 21600); // 6 hours
+ pref("app.normandy.shieldLearnMoreUrl", "https://support.mozilla.org/1/firefox/%VERSION%/%OS%/%LOCALE%/shield");
+ pref("app.normandy.last_seen_buildid", "");
+ pref("app.normandy.onsync_skew_sec", 600);
+-#ifdef MOZ_DATA_REPORTING
+-  pref("app.shield.optoutstudies.enabled", true);
+-#else
+-  pref("app.shield.optoutstudies.enabled", false);
+-#endif
++// default was set by MOZ_DATA_REPORTING
++pref("app.shield.optoutstudies.enabled", false);
+ 
+ // Multi-lingual preferences:
+ //  *.enabled - Are langpacks available for the build of Firefox?
+@@ -2908,9 +2913,10 @@ pref("toolkit.coverage.enabled", false);
+ pref("toolkit.coverage.endpoint.base", "https://coverage.mozilla.org");
+ 
+ // Discovery prefs
+-pref("browser.discovery.enabled", true);
+-pref("browser.discovery.containers.enabled", true);
+-pref("browser.discovery.sites", "addons.mozilla.org");
++pref("browser.discovery.enabled", false);
++// Commented out:
++//pref("browser.discovery.containers.enabled", true);
++//pref("browser.discovery.sites", "addons.mozilla.org");
+ 
+ pref("browser.engagement.recent_visited_origins.expiry", 86400); // 24 * 60 * 60 (24 hours in seconds)
+ pref("browser.engagement.downloads-button.has-used", false);
+@@ -2920,7 +2926,7 @@ pref("browser.engagement.sidebar-button.has-used", false);
+ pref("browser.engagement.library-button.has-used", false);
+ pref("browser.engagement.ctrlTab.has-used", false);
+ 
+-pref("browser.aboutConfig.showWarning", true);
++pref("browser.aboutConfig.showWarning", false);
+ 
+ pref("browser.toolbars.keyboard_navigation", true);
+ 
+@@ -2965,7 +2971,7 @@ pref("identity.fxaccounts.toolbar.syncSetup.panelAccessed", false);
+ // Toolbox preferences
+ pref("devtools.toolbox.footer.height", 250);
+ pref("devtools.toolbox.sidebar.width", 500);
+-pref("devtools.toolbox.host", "bottom");
++pref("devtools.toolbox.host", "right");
+ pref("devtools.toolbox.previousHost", "right");
+ pref("devtools.toolbox.selectedTool", "inspector");
+ pref("devtools.toolbox.zoomValue", "1");
+@@ -2984,7 +2990,7 @@ pref("devtools.toolbox.alwaysOnTop", true);
+ //   All processes, all documents, all workers, all add-ons.
+ // - "parent-process" will restrict debugging to the parent process
+ //   All privileged javascript, documents and workers running in the parent process.
+-pref("devtools.browsertoolbox.scope", "parent-process");
++pref("devtools.browsertoolbox.scope", "everything");
+ 
+ // Controls the hability to debug popups from the same DevTools
+ // of the original tab the popups are coming from
+@@ -3180,11 +3186,11 @@ pref("devtools.styleeditor.transitions", true);
+ pref("devtools.screenshot.clipboard.enabled", false);
+ pref("devtools.screenshot.audio.enabled", true);
+ 
+-// Make sure the DOM panel is hidden by default
+-pref("devtools.dom.enabled", false);
++// Make sure the DOM panel is not hidden by default
++pref("devtools.dom.enabled", true);
+ 
+-// Enable the Accessibility panel.
+-pref("devtools.accessibility.enabled", true);
++// Disable the Accessibility panel.
++pref("devtools.accessibility.enabled", false);
+ 
+ // Web console filters
+ pref("devtools.webconsole.filter.error", true);
+@@ -3323,11 +3329,8 @@ pref("devtools.aboutdebugging.collapsibilities.temporaryExtension", false);
+ 
+ // about:debugging: only show system and hidden extensions in local builds by
+ // default.
+-#ifdef MOZILLA_OFFICIAL
+-  pref("devtools.aboutdebugging.showHiddenAddons", false);
+-#else
+-  pref("devtools.aboutdebugging.showHiddenAddons", true);
+-#endif
++// default was false for MOZILLA_OFFICIAL and true otherwise
++pref("devtools.aboutdebugging.showHiddenAddons", true);
+ 
+ // Add some extra logging to the console, for debugging
+ pref("devtools.aboutdebugging.showReduxActionsInConsole", false);
+@@ -3626,3 +3629,7 @@ pref("distribution.mozillaonline.ignore", true);
+ #ifdef XP_MACOSX
+   pref("browser.macAppMenu.setAsDefaultShown", false);
+ #endif
++
++// Allow profile/chrome/userChrome.css to customize browser chrome styles
++// And profile/chrome/userContent.css to customize webpage styles
++pref("toolkit.legacyUserProfileCustomizations.stylesheets", true);
+-- 
+2.55.0
+
