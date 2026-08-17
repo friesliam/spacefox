@@ -4,53 +4,334 @@ import json
 import os
 import subprocess
 import sys
+import shutil
+from pathlib import Path
 
 
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-FIREFOX_SRC = os.path.join(SCRIPT_DIR, "firefox")
-PKG_DATA = os.path.join(SCRIPT_DIR, "spacefox.json");
+
+SPACEFOX_ROOT = Path(__file__).resolve().parent
 
 
-def cmd(*args: str):
-    process = subprocess.Popen(args, cwd=FIREFOX_SRC)
-    _ = process.wait()
+
+class Utils:
+    @staticmethod
+    def cmd(*args: str, cwd=None, check=True):
+        if cwd is None:
+            cwd = LocalConfigFile.firefox_src_dir
+        subprocess.run(args, cwd=cwd, check=check)
+
+    @staticmethod
+    def load_json_file(filepath: Path):
+        with open(filepath, "r") as file:
+            return json.load(file)
+
+    @staticmethod
+    def write_json_file(data, filepath: Path):
+        with open(filepath, "w") as file:
+            json.dump(data, file, indent=4)
+
+    # Returns the directory to create a new firefox source in given a release tag
+    # If the tag does not start with FIREFOX_ and end with _RELEASE, this will return None
+    @staticmethod
+    def firefox_src_dir_from_tag(tag: str) -> Path | None:
+        PREFIX = "FIREFOX_"
+        SUFFIX = "_RELEASE"
+        if not tag.startswith(PREFIX) or not tag.endswith(SUFFIX):
+            return None
+        version = tag[len(PREFIX):-len(SUFFIX)]
+        dirname = f"firefox_{version}"
+        return SPACEFOX_ROOT / dirname
+
+    @staticmethod
+    def print_no_active_firefox_src_dir():
+        print("There is no Firefox source directory specified in local.config.json or the directory does not exist.")
+
+    @staticmethod
+    def ensure_continue(message: str):
+        res = input(message).strip().lower()
+        if res != "y":
+            print("Exiting...")
+            sys.exit()
+
+    @staticmethod
+    def is_dir_empty(dirname: Path):
+        if dirname.exists() and any(dirname.iterdir()):
+            return False
+        else:
+            return True
+
+    @staticmethod
+    def create_dir(dirname: Path):
+        dirname.mkdir(parents=False, exist_ok=True)
+
+    @staticmethod
+    def apply_patches(patchfiles: list[Path]):
+        res = subprocess.run(
+            ["git", "am", "--3way", *patchfiles],
+            cwd=LocalConfigFile.firefox_src_dir,
+            check=False
+        )
+        if res.returncode != 0:
+            print("Error applying some patch(es); run either:")
+            print("    Resolve the conflicts manually, stage the files, then run './spacefox patch --continue'")
+            print("    Run './spacefox patch --abort' to abort")
+            sys.exit(1)
+
+    @staticmethod
+    def parse_list_file(filepath: Path, func=lambda x: x) -> list[any]:
+        list = []
+        with open(filepath, "r") as file:
+            for item in file:
+                item = item.strip()
+                if not item or item.startswith("#"):
+                    continue
+                item = item.split(" #")[0].strip()
+                item = func(item)
+                list.append(item)
+        return list
 
 
-def main():
-    match sys.argv[1:]:
+
+
+
+class LocalConfigFile:
+    __filepath = SPACEFOX_ROOT / "local.config.json"
+    # the default file that is copied into local.config.json initially
+    __default_filepath = SPACEFOX_ROOT / "local.config.json.default"
+
+    data = None
+    firefox_src_dir = None
+
+    @staticmethod
+    def __create_if_nonexistent():
+        if not LocalConfigFile.__filepath.exists():
+            shutil.copy(LocalConfigFile.__default_filepath, LocalConfigFile.__filepath)
+            print("Created local.config.json with the default values")
+
+    @staticmethod
+    def firefox_src_dir_exists():
+        return (LocalConfigFile.firefox_src_dir is not None) and LocalConfigFile.firefox_src_dir.is_dir()
+
+    # Only call once
+    # If called multiple times, firefox_src_dir may be invalid if one the subsequent calls had an empty string set in local.config.json
+    @staticmethod
+    def load():
+        LocalConfigFile.__create_if_nonexistent()
+        LocalConfigFile.data = Utils.load_json_file(LocalConfigFile.__filepath)
+        src_dir = LocalConfigFile.data["paths"]["firefox_src_dir"]
+        if src_dir != "":
+            LocalConfigFile.firefox_src_dir = SPACEFOX_ROOT / src_dir
+
+    @classmethod
+    def __getitem__(cls, key):
+        return cls.data[key]
+
+    # does not sync the firefox_src_dir value
+    @classmethod
+    def __setitem__(cls, key, val):
+        cls.data[key] = val
+
+    @staticmethod
+    def write():
+        Utils.write_json_file(LocalConfigFile.data, LocalConfigFile.__filepath)
+
+
+
+class PkgData:
+    __filepath = SPACEFOX_ROOT / "spacefox.json"
+
+    data = None
+
+    @staticmethod
+    def load():
+        PkgData.data = Utils.load_json_file(PkgData.__filepath)
+
+    @classmethod
+    def __getitem__(cls, key):
+        return cls.data[key]
+
+    @classmethod
+    def __setitem__(cls, key, val):
+        cls.data[key] = val
+
+    @staticmethod
+    def write():
+        Utils.write_json_file(PkgData.data, PkgData.__filepath)
+
+
+
+def run():
+    if LocalConfigFile.firefox_src_dir_exists():
+        Utils.cmd("./mach", "run")
+    else:
+        Utils.print_no_active_firefox_src_dir()
+
+def build(*args: str):
+    if LocalConfigFile.firefox_src_dir_exists():
+        Utils.cmd("./mach", "build", *args)
+    else:
+        Utils.print_no_active_firefox_src_dir()
+
+def configure():
+    if LocalConfigFile.firefox_src_dir_exists():
+        Utils.cmd("./mach", "configure")
+    else:
+        Utils.print_no_active_firefox_src_dir()
+
+def build_full():
+    if LocalConfigFile.firefox_src_dir_exists():
+        Utils.cmd("./mach", "configure")
+        Utils.cmd("./mach", "build")
+    else:
+        Utils.print_no_active_firefox_src_dir()
+
+def copysrc():
+    if LocalConfigFile.firefox_src_dir_exists():
+        src = SPACEFOX_ROOT / "src"
+        shutil.copytree(src, LocalConfigFile.firefox_src_dir, dirs_exist_ok=True)
+    else:
+        Utils.print_no_active_firefox_src_dir()
+
+def clone(tag=None):
+    if tag is None:
+        tag = PkgData["firefox"]["release_tag"]
+    src_dir = Utils.firefox_src_dir_from_tag(tag)
+    if src_dir is None:
+        print("Invalid firefox release tag format; the tag should begin with 'FIREFOX_' and end with '_RELEASE'")
+        sys.exit(1)
+    if not Utils.is_dir_empty(src_dir):
+        Utils.ensure_continue(f"The directory {src_dir} is not empty; the contents will be overwritten; do you want to continue? (y/n)")
+        shutil.rmtree(src_dir)
+    Utils.create_dir(src_dir)
+    repo = PkgData["firefox"]["repository"]
+    spacefox_branch = PkgData["build"]["branch"]
+    Utils.cmd("git", "init", "-b", "main", cwd=src_dir)
+    Utils.cmd("git", "remote", "add", "upstream", repo, cwd=src_dir)
+    Utils.cmd("git", "fetch", "--depth", "1", "upstream", f"refs/tags/{tag}", cwd=src_dir)
+    Utils.cmd("git", "switch", "-C", "main", "FETCH_HEAD", cwd=src_dir)
+    Utils.cmd("git", "switch", "-c", spacefox_branch, cwd=src_dir)
+    # git config suggested by ./mach bootstrap
+    Utils.cmd("git", "config", "core.untrackedCache", "true", cwd=src_dir)
+    Utils.cmd("git", "config", "--unset", "core.fsMonitor", check=False, cwd=src_dir)
+    # avoid revealing email address in commits or patches
+    Utils.cmd("git", "config", "user.email", "contributor@spacefox.invalid", cwd=src_dir)
+    LocalConfigFile["paths"]["firefox_src_dir"] = str(src_dir.relative_to(SPACEFOX_ROOT))
+    LocalConfigFile.write()
+
+def patch():
+    patch_dir = PkgData["paths"]["patchfile_dir"]
+    ordering_list = PkgData["paths"]["patchfile_ordering_file"]
+    func = lambda filepath: SPACEFOX_ROOT / patch_dir / filepath
+    patchfiles = Utils.parse_list_file(ordering_list, func)
+    Utils.apply_patches(patchfiles)
+
+def patch_continue():
+    if LocalConfigFile.firefox_src_dir_exists():
+        Utils.cmd("git", "am", "--continue")
+    else:
+        Utils.print_no_active_firefox_src_dir()
+
+def patch_continue():
+    if LocalConfigFile.firefox_src_dir_exists():
+        Utils.cmd("git", "am", "--abort")
+    else:
+        Utils.print_no_active_firefox_src_dir()
+
+def switch_src_dir(dirname: str):
+    LocalConfigFile["paths"]["firefox_src_dir"] = dirname
+    LocalConfigFile.write()
+    print(f"Set the current firefox source directory to {dirname}")
+
+def bootstrap():
+    if LocalConfigFile.firefox_src_dir_exists():
+        Utils.cmd("./mach", "bootstrap")
+    else:
+        Utils.print_no_active_firefox_src_dir()
+
+
+
+def main(args: list[str]):
+    match args:
+        # Run the browser
+        # Uses ./mach run
         case ["run"]:
-            cmd("./mach", "run")
+            LocalConfigFile.load()
+            run()
 
+        # Builds the browser
+        # Uses ./mach build
         case ["build"]:
-            cmd("./mach", "build", "-j6")
+            LocalConfigFile.load()
+            build()
 
+        # Builds the browser for only frontend changes
+        # Uses ./mach build faster
         case ["build", "faster"]:
-            cmd("./mach", "build", "faster")
+            LocalConfigFile.load()
+            build("faster")
 
+        # Configures mozconfig files
+        # Uses ./mach configure
+        case ["configure"]:
+            LocalConfigFile.load()
+            configure()
+
+        # Builds the browser
+        case ["build", "--full"]:
+            LocalConfigFile.load()
+            build_full()
+
+        # Copies the src/ directory into the firefox source directory
+        case ["copysrc"]:
+            LocalConfigFile.load()
+            copysrc()
+
+        # Clones the firefox source from a specific tag
+        case ["clone", "--tag", tag]:
+            LocalConfigFile.load()
+            PkgData.load()
+            clone(tag)
+
+        # Clones the firefox release that spacefox currently uses
         case ["clone"]:
-            with open(PKG_DATA, "r") as file:
-                pkg_data = json.load(file)
-            repo = pkg_data["firefox"]["repository"]
-            tag = pkg_data["firefox"]["tag"]
-            spacefox_branch = pkg_data["firefox"]["custom_branch"]
-            cmd("git", "init", "-b", "main")
-            cmd("git", "remote", "add", "upstream", repo)
-            cmd("git", "fetch", "--depth", "1", "upstream", f"refs/tags/{tag}")
-            cmd("git", "switch", "-C", "main", "FETCH_HEAD")
-            cmd("git", "switch", "-c", spacefox_branch)
-            # git config suggested by mach bootstrap
-            cmd("git", "config", "core.untrackedCache", "true")
-            cmd("git", "config", "--unset", "core.fsMonitor")
+            LocalConfigFile.load()
+            PkgData.load()
+            clone()
 
+        # Applies .patch files
+        case ["patch"]:
+            LocalConfigFile.load()
+            PkgData.load()
+            patch()
+
+        # Continues with patching
+        case ["patch", "--continue"]:
+            LocalConfigFile.load()
+            patch_continue()
+
+        # Aborts patching
+        case ["patch", "--abort"]:
+            LocalConfigFile.load()
+            patch_abort()
+
+        # Switches the currently used firefox source directory in local.config.json
+        # dirname must be relative to SPACEFOX_ROOT
+        case ["--source-dir", dirname]:
+            LocalConfigFile.load()
+            switch_src_dir(dirname)
+
+        # Bootstraps the system for compiling firefox
         case ["bootstrap"]:
-            cmd("./mach", "bootstrap")
+            LocalConfigFile.load()
+            bootstrap()
 
         case []:
             print("No arguments provided.")
 
         case [*_args]:
-            print("Unknown arguments.")
+            print("Unknown argument(s).")
+
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:])

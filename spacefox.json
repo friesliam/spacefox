@@ -1,10 +1,15 @@
 {
-    "name": "SpaceFox",
+    "name": "Spacefox",
     "version": "0.1.0",
     "firefox": {
         "repository": "https://github.com/mozilla-firefox/firefox.git",
-        "tag": "FIREFOX_153_0esr_RELEASE",
-        "branch": "esr153",
-        "custom_branch": "spacefox"
+        "release_tag": "FIREFOX_153_0_4_RELEASE"
+    },
+    "build": {
+        "branch": "spacefox"
+    },
+    "paths": {
+        "patchfile_dir": "patches",
+        "patchfile_ordering_file": "patches/ordering.list"
     }
 }

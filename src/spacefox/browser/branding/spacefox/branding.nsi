@@ -8,9 +8,9 @@
 
 # BrandFullNameInternal is used for some registry and file system values
 # instead of BrandFullName and typically should not be modified.
-!define BrandFullNameInternal "SpaceFox"
-!define BrandFullName         "SpaceFox"
-!define CompanyName           "SpaceFox Company"
+!define BrandFullNameInternal "Spacefox"
+!define BrandFullName         "Spacefox"
+!define CompanyName           "Spacefox Company"
 !define URLInfoAbout          "https://github.com/friesliam/spacefox"
 !define HelpLink              "https://github.com/friesliam/spacefox"
 

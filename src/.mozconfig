@@ -15,9 +15,8 @@ mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/obj-spacefox
 ac_add_options --enable-project=browser
 
 # Naming
-ac_add_options --with-app-basename=SpaceFox
-ac_add_options --with-app-name=SpaceFox
-#export MOZ_APP_DISPLAYNAME=SpaceFox # now set in spacefox/browser/branding/spacefox/configure.sh
+ac_add_options --with-app-basename=Spacefox
+ac_add_options --with-app-name=Spacefox
 export MOZ_APP_REMOTINGNAME=spacefox
 
 # Avoid Nightly compilations
@@ -33,9 +32,6 @@ ac_add_options --disable-updater
 ac_add_options --enable-jit
 ac_add_options --enable-release
 
-# Remove data tracking
-export MOZ_TELEMETRY_REPORTING=
-
 
 
 # See: toolkit/modules/AppConstants.sys.mjs
@@ -44,5 +40,5 @@ export MOZ_TELEMETRY_REPORTING=
 export MOZ_REQUIRE_SIGNING=
 
 # Privacy
-export MOZ_NORMANDY=
+export MOZ_TELEMETRY_REPORTING=
 export MOZ_DATA_REPORTING=

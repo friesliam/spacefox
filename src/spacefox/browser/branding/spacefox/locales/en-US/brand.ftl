@@ -16,12 +16,12 @@
 ## For further details, consult:
 ## https://mozilla-l10n.github.io/styleguides/mozilla_general/#brands-copyright-and-trademark
 
--brand-shorter-name = SpaceFox
--brand-short-name = SpaceFox
--brand-shortcut-name = SpaceFox
--brand-full-name = SpaceFox
+-brand-shorter-name = Spacefox
+-brand-short-name = Spacefox
+-brand-shortcut-name = Spacefox
+-brand-full-name = Spacefox
 # This brand name can be used in messages where the product name needs to
 # remain unchanged across different versions (Nightly, Beta, etc.).
--brand-product-name = SpaceFox
--vendor-short-name = SpaceFoxVendor
+-brand-product-name = Spacefox
+-vendor-short-name = SpacefoxVendor
 trademarkInfo = { " " }

@@ -1,4 +1,4 @@
-From 01525fd0cf3232a92833302e9545e32ed8dc7011 Mon Sep 17 00:00:00 2001
+From 5f0dc6148e582ce4b506d5511061e877876cde0b Mon Sep 17 00:00:00 2001
 From: Liam Fries <contributors@spacefox.invalid>
 Date: Sat, 15 Aug 2026 22:29:41 -0400
 Subject: [PATCH] Configured the browser's default about:config preferences
@@ -8,7 +8,7 @@ Subject: [PATCH] Configured the browser's default about:config preferences
  1 file changed, 105 insertions(+), 98 deletions(-)
 
 diff --git a/browser/app/profile/firefox.js b/browser/app/profile/firefox.js
-index d7f3045f1f..7266284734 100644
+index 28998cfe9b..2eef003340 100644
 --- a/browser/app/profile/firefox.js
 +++ b/browser/app/profile/firefox.js
 @@ -69,12 +69,12 @@ pref("extensions.webextensions.remote", true);
@@ -82,7 +82,7 @@ index d7f3045f1f..7266284734 100644
  
  // Whether the Firefox Suggest contextual opt-in result is enabled.
  pref("browser.urlbar.quicksuggest.contextualOptIn", false);
-@@ -880,7 +881,7 @@ pref("browser.download.viewableInternally.enabledTypes", "xml,svg,webp,avif,jxl"
+@@ -887,7 +888,7 @@ pref("browser.download.viewableInternally.enabledTypes", "xml,svg,webp,avif,jxl"
  
  // This controls whether the button is automatically shown/hidden depending
  // on whether there are downloads to show.
@@ -91,7 +91,7 @@ index d7f3045f1f..7266284734 100644
  
  // Controls whether to open the downloads panel every time a download begins.
  // The first download ever run in a new profile will still open the panel.
-@@ -921,7 +922,7 @@ pref("browser.search.separatePrivateDefault.ui.enabled", false);
+@@ -928,7 +929,7 @@ pref("browser.search.separatePrivateDefault.ui.enabled", false);
  pref("browser.search.separatePrivateDefault.ui.banner.max", 0);
  
  // Enables search SERP telemetry page categorization.
@@ -100,7 +100,7 @@ index d7f3045f1f..7266284734 100644
  
  // A count of Glean SERP categorization event metrics that have been recorded
  // but not yet submitted in a ping. Needed to prevent sending a ping with only
-@@ -930,7 +931,8 @@ pref("browser.search.serpMetricsRecordedCounter", 0);
+@@ -937,7 +938,8 @@ pref("browser.search.serpMetricsRecordedCounter", 0);
  
  // Search Bar removal from the toolbar for users who haven’t used it in 120
  // days
@@ -110,7 +110,7 @@ index d7f3045f1f..7266284734 100644
  
  // Feature gate for searchbar based on urlbar code.
  pref("browser.search.widget.new", true);
-@@ -1054,14 +1056,14 @@ pref("browser.tabs.insertAfterCurrent", false);
+@@ -1061,14 +1063,14 @@ pref("browser.tabs.insertAfterCurrent", false);
  // results in the tabbar scrolling back to the beginning. Setting
  // |insertAfterCurrentExceptPinned| to true will add tabs at the end of the
  // tabbar.
@@ -128,7 +128,7 @@ index d7f3045f1f..7266284734 100644
  pref("browser.tabs.tabClipWidth", 140);
  pref("browser.tabs.tabMinWidth", 76);
  
-@@ -1095,7 +1097,7 @@ pref("browser.tabs.remote.separatePrivilegedMozillaWebContentProcess", true);
+@@ -1102,7 +1104,7 @@ pref("browser.tabs.remote.separatePrivilegedMozillaWebContentProcess", true);
  #ifdef NIGHTLY_BUILD
  pref("browser.tabs.tooltipsShowPidAndActiveness", true);
  #else
@@ -137,7 +137,7 @@ index d7f3045f1f..7266284734 100644
  #endif
  
  pref("browser.tabs.hoverPreview.enabled", true);
-@@ -1216,8 +1218,8 @@ pref("browser.tabs.allow_transparent_browser", false);
+@@ -1223,8 +1225,8 @@ pref("browser.tabs.allow_transparent_browser", false);
  // Scripts & Windows prefs
  pref("dom.disable_open_during_load",              true);
  
@@ -148,7 +148,7 @@ index d7f3045f1f..7266284734 100644
  // prevent JS from monkeying with window focus, etc
  pref("dom.disable_window_flip",                   true);
  
-@@ -1407,9 +1409,9 @@ pref("accessibility.typeaheadfind.flashBar", 1);
+@@ -1414,9 +1416,9 @@ pref("accessibility.typeaheadfind.flashBar", 1);
  // Whether we had to hide the "Firefox Labs" section because it would be empty.
  pref("browser.preferences.experimental.hidden", false);
  // Whether we show the "More from Mozilla" section.
@@ -160,7 +160,7 @@ index d7f3045f1f..7266284734 100644
  // Whether to show unavailable AI controls regardless of region/locale
  // restrictions. This is intended for localizers to be able to see the strings.
  pref("browser.preferences.aiControls.showUnavailable", false);
-@@ -1675,7 +1677,7 @@ pref("services.sync.prefs.sync.accessibility.browsewithcaret", true);
+@@ -1682,7 +1684,7 @@ pref("services.sync.prefs.sync.accessibility.browsewithcaret", true);
  pref("services.sync.prefs.sync.accessibility.typeaheadfind", true);
  pref("services.sync.prefs.sync.accessibility.typeaheadfind.linksonly", true);
  pref("services.sync.prefs.sync.addons.ignoreUserEnabledChanges", true);
@@ -169,7 +169,7 @@ index d7f3045f1f..7266284734 100644
  // The addons prefs related to repository verification are intentionally
  // not synced for security reasons. If a system is compromised, a user
  // could weaken the pref locally, install an add-on from an untrusted
-@@ -1683,23 +1685,23 @@ pref("services.sync.prefs.sync.app.shield.optoutstudies.enabled", true);
+@@ -1690,23 +1692,23 @@ pref("services.sync.prefs.sync.app.shield.optoutstudies.enabled", true);
  // uncompromised Sync-connected devices.
  pref("services.sync.prefs.sync.browser.contentblocking.category", true);
  pref("services.sync.prefs.sync.browser.contentblocking.features.strict", true);
@@ -200,7 +200,7 @@ index d7f3045f1f..7266284734 100644
  // Some linux distributions disable all highlights by default.
  pref("services.sync.prefs.sync-seen.browser.newtabpage.activity-stream.section.highlights", false);
  pref("services.sync.prefs.sync.browser.newtabpage.activity-stream.section.highlights.includeVisited", true);
-@@ -1708,7 +1710,7 @@ pref("services.sync.prefs.sync.browser.newtabpage.activity-stream.section.highli
+@@ -1715,7 +1717,7 @@ pref("services.sync.prefs.sync.browser.newtabpage.activity-stream.section.highli
  pref("services.sync.prefs.sync.browser.newtabpage.activity-stream.section.highlights.rows", true);
  pref("services.sync.prefs.sync.browser.newtabpage.enabled", true);
  pref("services.sync.prefs.sync.browser.newtabpage.pinned", true);
@@ -209,7 +209,7 @@ index d7f3045f1f..7266284734 100644
  pref("services.sync.prefs.sync.browser.safebrowsing.downloads.enabled", true);
  pref("services.sync.prefs.sync.browser.safebrowsing.downloads.remote.block_potentially_unwanted", true);
  pref("services.sync.prefs.sync.browser.safebrowsing.malware.enabled", true);
-@@ -1716,7 +1718,7 @@ pref("services.sync.prefs.sync.browser.safebrowsing.phishing.enabled", true);
+@@ -1723,7 +1725,7 @@ pref("services.sync.prefs.sync.browser.safebrowsing.phishing.enabled", true);
  pref("services.sync.prefs.sync.browser.search.update", true);
  pref("services.sync.prefs.sync.browser.startup.homepage", true);
  pref("services.sync.prefs.sync.browser.startup.page", true);
@@ -218,7 +218,7 @@ index d7f3045f1f..7266284734 100644
  pref("services.sync.prefs.sync.browser.tabs.loadInBackground", true);
  pref("services.sync.prefs.sync.browser.tabs.warnOnClose", true);
  pref("services.sync.prefs.sync.browser.tabs.warnOnOpen", true);
-@@ -1821,9 +1823,9 @@ pref("prompts.defaultModalType", 3);
+@@ -1833,9 +1835,9 @@ pref("prompts.defaultModalType", 3);
  // Whether to use the discrete Top Sites component.
  pref("browser.topsites.component.enabled", false);
  
@@ -231,7 +231,7 @@ index d7f3045f1f..7266284734 100644
  pref("browser.topsites.contile.endpoint", "https://contile.services.mozilla.com/v1/tiles");
  
  // The base URL for the Quick Suggest anonymizing proxy. To make a request to
-@@ -1872,21 +1874,23 @@ pref("browser.newtabpage.activity-stream.mobileDownloadModal.variant-b", false);
+@@ -1884,21 +1886,23 @@ pref("browser.newtabpage.activity-stream.mobileDownloadModal.variant-b", false);
  pref("browser.newtabpage.activity-stream.mobileDownloadModal.variant-c", false);
  
  // Mozilla Ad Routing Service (MARS) unified ads service
@@ -264,7 +264,7 @@ index d7f3045f1f..7266284734 100644
  
  // List of regions that get weather by default.
  pref("browser.newtabpage.activity-stream.discoverystream.region-weather-config", "AT,BE,BG,CA,CH,CY,CZ,DE,DK,EE,ES,FI,FR,GB,GR,HR,HU,IE,IS,IT,LI,LT,LV,MT,NL,NO,PL,PT,RO,SE,SI,SK,US");
-@@ -1895,7 +1899,7 @@ pref("browser.newtabpage.activity-stream.discoverystream.region-weather-config",
+@@ -1907,7 +1911,7 @@ pref("browser.newtabpage.activity-stream.discoverystream.region-weather-config",
  pref("browser.newtabpage.activity-stream.discoverystream.locale-weather-config", "bg,cs,da,de,el,en-CA,en-GB,en-US,es-ES,et,fi,fr,hr,hu,is,it,lv,nb-NO,nl,pl,pt-PT,ro,sk,sl,sv-SE,tr");
  
  // Promo card visibility
@@ -273,7 +273,7 @@ index d7f3045f1f..7266284734 100644
  
  // Preference to enable wallpaper selection in the Customize Menu of new tab page
  pref("browser.newtabpage.activity-stream.newtabWallpapers.enabled", true);
-@@ -1948,7 +1952,7 @@ pref("messaging-system.askForFeedback", true);
+@@ -1960,7 +1964,7 @@ pref("messaging-system.askForFeedback", true);
  pref("browser.newtabpage.activity-stream.asrouter.useRemoteL10n", true);
  
  // These prefs control if Discovery Stream is enabled.
@@ -282,7 +282,7 @@ index d7f3045f1f..7266284734 100644
  pref("browser.newtabpage.activity-stream.discoverystream.hardcoded-basic-layout", false);
  pref("browser.newtabpage.activity-stream.discoverystream.hybridLayout.enabled", false);
  pref("browser.newtabpage.activity-stream.discoverystream.hideCardBackground.enabled", false);
-@@ -2224,30 +2228,32 @@ pref("sidebar.openTabsPanel.enabled", false);
+@@ -2236,30 +2240,32 @@ pref("sidebar.openTabsPanel.enabled", false);
  
  pref("sidebar.notification.badge.aichat", false);
  
@@ -333,7 +333,7 @@ index d7f3045f1f..7266284734 100644
  pref("browser.ml.linkPreview.ignoreMs", 2000);
  pref("browser.ml.linkPreview.longPress", true);
  pref("browser.ml.linkPreview.longPressMs", 1000);
-@@ -2278,7 +2284,8 @@ pref("browser.smartwindow.firstrun.explainerURL", "https://www.firefox.com/en-US
+@@ -2290,7 +2296,8 @@ pref("browser.smartwindow.firstrun.explainerURL", "https://www.firefox.com/en-US
  pref("places.semanticHistory.smartwindow.featureGate", false);
  
  // Smart Window: Merino World Cup Soccer tool call (bug 2038266)
@@ -343,7 +343,7 @@ index d7f3045f1f..7266284734 100644
  pref("browser.smartwindow.worldcup.endpointURL", "https://merino.services.mozilla.com");
  pref("browser.smartwindow.worldcup.timeoutMs", 2000);
  
-@@ -2355,7 +2362,7 @@ pref("identity.fxaccounts.commands.remoteTabManagement.enabled", true);
+@@ -2372,7 +2379,7 @@ pref("identity.fxaccounts.commands.remoteTabManagement.enabled", true);
  
  // Controls whether or not the client association ping has values set on it
  // when the sync-ui-state:update notification fires.
@@ -352,7 +352,7 @@ index d7f3045f1f..7266284734 100644
  
  // Note: when media.gmp-*.visible is true, provided we're running on a
  // supported platform/OS version, the corresponding CDM appears in the
-@@ -2421,21 +2428,21 @@ pref("browser.translations.quickAction.enabled", true);
+@@ -2438,21 +2445,21 @@ pref("browser.translations.quickAction.enabled", true);
  
  // Telemetry settings.
  // Determines if Telemetry pings can be archived locally.
@@ -380,7 +380,7 @@ index d7f3045f1f..7266284734 100644
  
  // Enable GMP support in the addon manager.
  pref("media.gmp-provider.enabled", true);
-@@ -2568,7 +2575,7 @@ pref("browser.send_to_device_locales", "de,en-GB,en-US,es-AR,es-CL,es-ES,es-MX,f
+@@ -2585,7 +2592,7 @@ pref("browser.send_to_device_locales", "de,en-GB,en-US,es-AR,es-CL,es-ES,es-MX,f
  pref("browser.vpn_promo.disallowed_regions", "ae,by,cn,cu,iq,ir,kp,om,ru,sd,sy,tm,tr");
  
  // Default to enabling VPN promo messages to be shown when specified and allowed
@@ -389,7 +389,7 @@ index d7f3045f1f..7266284734 100644
  // Only show vpn card to certain regions. Comma separated string of two letter ISO 3166-1 country codes.
  // The most recent list of supported countries can be found at https://support.mozilla.org/en-US/kb/mozilla-vpn-countries-available-subscribe
  // The full lists of supported country codes can also be found at https://github.com/mozilla/bedrock/search?q=VPN_COUNTRY_CODES and https://github.com/mozilla/bedrock/search?q=VPN_MOBILE_SUB_COUNTRY_CODES
-@@ -2588,7 +2595,7 @@ pref("browser.promo.pin.enabled", true);
+@@ -2605,7 +2612,7 @@ pref("browser.promo.pin.enabled", true);
  // Set to true for Fx113 (see bug 1808611)
  pref("browser.promo.cookiebanners.enabled", false);
  
@@ -398,7 +398,7 @@ index d7f3045f1f..7266284734 100644
  pref("browser.contentblocking.report.vpn_sub_id", "sub_HrfCZF7VPHzZkA");
  
  pref("browser.contentblocking.report.monitor.url", "https://monitor.firefox.com/?entrypoint=protection_report_monitor&utm_source=about-protections");
-@@ -2685,7 +2692,7 @@ pref("browser.tabs.remote.warmup.maxTabs", 3);
+@@ -2702,7 +2709,7 @@ pref("browser.tabs.remote.warmup.maxTabs", 3);
  pref("browser.tabs.remote.warmup.unloadDelayMs", 2000);
  
  // For the about:tabcrashed page
@@ -407,7 +407,7 @@ index d7f3045f1f..7266284734 100644
  pref("browser.tabs.crashReporting.includeURL", false);
  
  // Enables the "Unload Tab" context menu item
-@@ -2862,20 +2869,18 @@ pref("doh-rollout.clearModeOnShutdown", false);
+@@ -2884,20 +2891,18 @@ pref("doh-rollout.clearModeOnShutdown", false);
  pref("network.trr_ui.fallback_was_checked", true);
  
  // Normandy client preferences
@@ -433,7 +433,7 @@ index d7f3045f1f..7266284734 100644
  
  // Multi-lingual preferences:
  //  *.enabled - Are langpacks available for the build of Firefox?
-@@ -2908,9 +2913,10 @@ pref("toolkit.coverage.enabled", false);
+@@ -2930,9 +2935,10 @@ pref("toolkit.coverage.enabled", false);
  pref("toolkit.coverage.endpoint.base", "https://coverage.mozilla.org");
  
  // Discovery prefs
@@ -447,7 +447,7 @@ index d7f3045f1f..7266284734 100644
  
  pref("browser.engagement.recent_visited_origins.expiry", 86400); // 24 * 60 * 60 (24 hours in seconds)
  pref("browser.engagement.downloads-button.has-used", false);
-@@ -2920,7 +2926,7 @@ pref("browser.engagement.sidebar-button.has-used", false);
+@@ -2942,7 +2948,7 @@ pref("browser.engagement.sidebar-button.has-used", false);
  pref("browser.engagement.library-button.has-used", false);
  pref("browser.engagement.ctrlTab.has-used", false);
  
@@ -456,7 +456,7 @@ index d7f3045f1f..7266284734 100644
  
  pref("browser.toolbars.keyboard_navigation", true);
  
-@@ -2965,7 +2971,7 @@ pref("identity.fxaccounts.toolbar.syncSetup.panelAccessed", false);
+@@ -2987,7 +2993,7 @@ pref("identity.fxaccounts.toolbar.syncSetup.panelAccessed", false);
  // Toolbox preferences
  pref("devtools.toolbox.footer.height", 250);
  pref("devtools.toolbox.sidebar.width", 500);
@@ -465,7 +465,7 @@ index d7f3045f1f..7266284734 100644
  pref("devtools.toolbox.previousHost", "right");
  pref("devtools.toolbox.selectedTool", "inspector");
  pref("devtools.toolbox.zoomValue", "1");
-@@ -2984,7 +2990,7 @@ pref("devtools.toolbox.alwaysOnTop", true);
+@@ -3006,7 +3012,7 @@ pref("devtools.toolbox.alwaysOnTop", true);
  //   All processes, all documents, all workers, all add-ons.
  // - "parent-process" will restrict debugging to the parent process
  //   All privileged javascript, documents and workers running in the parent process.
@@ -474,7 +474,7 @@ index d7f3045f1f..7266284734 100644
  
  // Controls the hability to debug popups from the same DevTools
  // of the original tab the popups are coming from
-@@ -3180,11 +3186,11 @@ pref("devtools.styleeditor.transitions", true);
+@@ -3202,11 +3208,11 @@ pref("devtools.styleeditor.transitions", true);
  pref("devtools.screenshot.clipboard.enabled", false);
  pref("devtools.screenshot.audio.enabled", true);
  
@@ -490,7 +490,7 @@ index d7f3045f1f..7266284734 100644
  
  // Web console filters
  pref("devtools.webconsole.filter.error", true);
-@@ -3323,11 +3329,8 @@ pref("devtools.aboutdebugging.collapsibilities.temporaryExtension", false);
+@@ -3345,11 +3351,8 @@ pref("devtools.aboutdebugging.collapsibilities.temporaryExtension", false);
  
  // about:debugging: only show system and hidden extensions in local builds by
  // default.
@@ -504,7 +504,7 @@ index d7f3045f1f..7266284734 100644
  
  // Add some extra logging to the console, for debugging
  pref("devtools.aboutdebugging.showReduxActionsInConsole", false);
-@@ -3626,3 +3629,7 @@ pref("distribution.mozillaonline.ignore", true);
+@@ -3648,3 +3651,7 @@ pref("distribution.mozillaonline.ignore", true);
  #ifdef XP_MACOSX
    pref("browser.macAppMenu.setAsDefaultShown", false);
  #endif

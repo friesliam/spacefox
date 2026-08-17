@@ -1,4 +1,6 @@
 # Ignore firefox source code
-firefox/
+firefox_/
 
 notes/
+
+local.config.json
