@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import json
-import os
 import subprocess
 import sys
 import shutil
@@ -55,10 +54,7 @@ class Utils:
 
     @staticmethod
     def is_dir_empty(dirname: Path):
-        if dirname.exists() and any(dirname.iterdir()):
-            return False
-        else:
-            return True
+        if not dirname.exists() and any(dirname.iterdir())
 
     @staticmethod
     def create_dir(dirname: Path):
@@ -180,6 +176,8 @@ def configure():
 
 def build_full():
     if LocalConfigFile.firefox_src_dir_exists():
+        patch()
+        copysrc()
         Utils.cmd("./mach", "configure")
         Utils.cmd("./mach", "build")
     else:
@@ -220,7 +218,7 @@ def clone(tag=None):
 
 def patch():
     patch_dir = PkgData["paths"]["patchfile_dir"]
-    ordering_list = PkgData["paths"]["patchfile_ordering_file"]
+    ordering_list = Path(PkgData["paths"]["patchfile_ordering_file"])
     func = lambda filepath: SPACEFOX_ROOT / patch_dir / filepath
     patchfiles = Utils.parse_list_file(ordering_list, func)
     Utils.apply_patches(patchfiles)
@@ -231,7 +229,7 @@ def patch_continue():
     else:
         Utils.print_no_active_firefox_src_dir()
 
-def patch_continue():
+def patch_abort():
     if LocalConfigFile.firefox_src_dir_exists():
         Utils.cmd("git", "am", "--abort")
     else:
