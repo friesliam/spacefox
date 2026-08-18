@@ -30,14 +30,7 @@ This step can likely be skipped if it has been run before on this system.
 ```
 
 
-#### 4. Apply patch files
-
-```sh
-./spacefox patch
-```
-
-
-#### 5. Build
+#### 4. Build
 
 ```sh
 ./spacefox build --full

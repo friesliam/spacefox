@@ -1,5 +1,5 @@
 # Ignore firefox source code
-firefox_/
+firefox_*/
 
 notes/
 
