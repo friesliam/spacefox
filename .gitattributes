@@ -1,3 +1,2 @@
-# Match .patch files to their language
-*.cpp.patch linguist-language=C++
-*.js.patch linguist-language=JavaScript
+*.patch linguist-language=Diff
+moz.build linguist-language=Python

@@ -17,7 +17,7 @@ To clone the Firefox release that Spacefox currently uses, run the following:
 
 To clone a custom Firefox release by tag, use:
 > Conflicting patch files will need to be resolved manually if using a custom release
-```sh
+```
 ./spacefox clone --tag <TAG>
 ```
 

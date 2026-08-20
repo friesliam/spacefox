@@ -54,7 +54,7 @@ class Utils:
 
     @staticmethod
     def is_dir_empty(dirname: Path):
-        if not dirname.exists() and any(dirname.iterdir())
+        return not dirname.exists() and any(dirname.iterdir())
 
     @staticmethod
     def create_dir(dirname: Path):
