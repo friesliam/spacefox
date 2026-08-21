@@ -1,0 +1,24 @@
+From af1d5d49d0a15f3e4078cfc762141177a5b6f6a9 Mon Sep 17 00:00:00 2001
+From: Liam Fries <contributor@spacefox.invalid>
+Date: Thu, 20 Aug 2026 20:21:32 -0400
+Subject: [PATCH] Add spacefox/ directory to the root moz.build
+
+---
+ moz.build | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/moz.build b/moz.build
+index 1709f8b777..e28ca357f4 100644
+--- a/moz.build
++++ b/moz.build
+@@ -179,6 +179,7 @@ DIRS += [
+     "python",
+     "testing",
+     "third_party/python",
++    "spacefox",
+ ]
+ 
+ if CONFIG["MOZ_APPSERVICES_IN_TREE"]:
+-- 
+2.55.0
+

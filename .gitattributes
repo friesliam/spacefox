@@ -1,2 +1,3 @@
 *.patch linguist-language=Diff
 moz.build linguist-language=Python
+.mozconfig linguist-language=Shell

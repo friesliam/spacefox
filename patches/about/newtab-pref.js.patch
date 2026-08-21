@@ -1,0 +1,50 @@
+From f2d23263a9004b3577f9ba375125ef52da327f60 Mon Sep 17 00:00:00 2001
+From: Liam Fries <contributor@spacefox.invalid>
+Date: Thu, 20 Aug 2026 20:27:46 -0400
+Subject: [PATCH] Override AboutNewTab.sys.mjs for pref values
+
+---
+ browser/modules/AboutNewTab.sys.mjs | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/browser/modules/AboutNewTab.sys.mjs b/browser/modules/AboutNewTab.sys.mjs
+index 4d6b04e72b..f1bf5ddb49 100644
+--- a/browser/modules/AboutNewTab.sys.mjs
++++ b/browser/modules/AboutNewTab.sys.mjs
+@@ -4,6 +4,7 @@
+ 
+ import { AppConstants } from "resource://gre/modules/AppConstants.sys.mjs";
+ import { XPCOMUtils } from "resource://gre/modules/XPCOMUtils.sys.mjs";
++import { SpacefoxAboutNewTab } from "resource://spacefox/modules/SpacefoxAboutNewTab.sys.mjs";
+ 
+ const lazy = {};
+ 
+@@ -54,6 +55,7 @@ export const AboutNewTab = {
+     if (this.initialized) {
+       return;
+     }
++    SpacefoxAboutNewTab.init();
+     let { promise, resolve } = Promise.withResolvers();
+     this.activityStreamPromise = promise;
+     this._activityStreamResolver = resolve;
+@@ -136,7 +138,7 @@ export const AboutNewTab = {
+       this._activityStreamEnabled = false;
+     }
+ 
+-    this._newTabURL = ABOUT_URL;
++    this._newTabURL = SpacefoxAboutNewTab.newTabURL;
+     return true;
+   },
+ 
+@@ -170,7 +172,7 @@ export const AboutNewTab = {
+ 
+   resetNewTabURL() {
+     this._newTabURLOverridden = false;
+-    this._newTabURL = ABOUT_URL;
++    this._newTabURL = SpacefoxAboutNewTab.newTabURL;
+     this.toggleActivityStream(true, true);
+     this.notifyChange();
+   },
+-- 
+2.55.0
+
