@@ -1,4 +1,5 @@
 import { SpacefoxResourceHost } from "resource://spacefox/modules/SpacefoxResourceHost.sys.mjs"; // TODO: temporary
+import { AboutNewTab } from "resource://app/modules/AboutNewTab.sys.mjs";
 
 const ABOUT_URL = "resource://spacefoxre/newtab/index.html";
 const NEWTAB_PREF = "spacefox.about.newtab.override";
@@ -8,7 +9,7 @@ const NEWTAB_PREF = "spacefox.about.newtab.override";
 // this._newTabURL = ABOUT_URL;                      <-- for every line like this
 // this._newTabURL = SpacefoxAboutNewTab.newTabURL;  <-- replace it with this
 //
-const SpacefoxAboutNewTab = {
+export const SpacefoxAboutNewTab = {
     _newTabURL: ABOUT_URL,
 
     init() {

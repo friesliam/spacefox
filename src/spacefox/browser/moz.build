@@ -1,0 +1,11 @@
+# These two lines are required so that the pref files apply after firefox.js
+DIST_SUBDIR = "browser"
+export("DIST_SUBDIR")
+
+JS_PREFERENCE_PP_FILES += [
+    "app/profile/00-dev.js",
+    "app/profile/01-features.js",
+    "app/profile/02-privacy.js",
+    "app/profile/03-spacefox.js",
+    "app/profile/04-workflow.js",
+]
