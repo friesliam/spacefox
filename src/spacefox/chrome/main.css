@@ -1,0 +1,11 @@
+/* Imports */
+@import url("chrome://spacefox/content/tabs.css");
+
+/* Overrides */
+:root {
+  /* Border Radius */
+  --border-radius-large: 12px !important;
+  --border-radius-medium: 7px !important;
+  --border-radius-small: 4px !important;
+  --border-radius-xsmall: 2px !important;
+}

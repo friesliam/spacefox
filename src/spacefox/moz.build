@@ -1,7 +1,5 @@
 DIRS += [
-    "modules",
     "browser",
-]
-JAR_MANIFESTS += [
-    "jar.mn",
+    "chrome",
+    "resource",
 ]

@@ -1,0 +1,10 @@
+with Files("SpacefoxAboutNewTab.sys.mjs"):
+    BUG_COMPONENT = ("Firefox", "General")
+
+with Files("SpacefoxResourceHost.sys.mjs"):
+    BUG_COMPONENT = ("Firefox", "General")
+
+EXTRA_JS_MODULES += [
+    "SpacefoxAboutNewTab.sys.mjs",
+    "SpacefoxResourceHost.sys.mjs",
+]

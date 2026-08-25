@@ -1,0 +1,27 @@
+From acfc6a002a16b0cbe4818f450b423c7e045139f8 Mon Sep 17 00:00:00 2001
+From: Liam Fries <contributor@spacefox.invalid>
+Date: Tue, 25 Aug 2026 16:03:18 -0400
+Subject: [PATCH] Fixed Spacefox imports to Firefox chrome
+
+---
+ browser/base/content/browser.xhtml | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/browser/base/content/browser.xhtml b/browser/base/content/browser.xhtml
+index 453aa9d8b4..fc87d4cfc1 100644
+--- a/browser/base/content/browser.xhtml
++++ b/browser/base/content/browser.xhtml
+@@ -104,8 +104,8 @@
+   <script src="chrome://browser/content/browser-main.js"></script>
+ 
+   <!-- Spacefox chrome imports -->
+-  <link rel="stylesheet" href="chrome://spacefox/main.css" />
+-  <script src="chrome://spacefox/main.js"></script>
++  <link rel="stylesheet" href="chrome://spacefox/content/main.css" />
++  <script src="chrome://spacefox/content/main.js"></script>
+ </head>
+ <html:body xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+ # All sets except for popupsets (commands, keys, and stringbundles)
+-- 
+2.55.0
+

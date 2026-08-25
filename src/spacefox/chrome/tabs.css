@@ -1,0 +1,50 @@
+/* (vertical/horizontal) tab styling */
+#tabbrowser-arrowscrollbox {
+  --tab-min-height: max(33px, calc(1.7 * 1em)) !important;
+  .tabbrowser-tab {
+    padding: 0 !important;
+    margin: 0 !important;
+    .tab-background {
+      border-radius:
+        var(--border-radius-small)
+        var(--border-radius-medium)
+        var(--border-radius-small)
+        var(--border-radius-small) !important;
+      box-shadow: none !important;
+    }
+    .tab-close-button {
+      border-radius:
+        var(--border-radius-small) !important;
+    }
+  }
+  tab-group {
+    .tab-group-label-container {
+      .tab-group-label {
+        color: black !important;
+        border-radius: var(--border-radius-small) !important;
+      }
+    }
+  }
+}
+
+/* (vertical) tab styling */
+#tabbrowser-arrowscrollbox[orient="vertical"] {
+  .tab-group-line {
+    width: var(--tab-group-line-thickness) !important;
+  }
+  tab-group {
+    .tab-group-overflow-count-container {
+      margin: 0 !important;
+      &::after {
+        width: var(--tab-group-line-thickness) !important;
+      }
+    }
+  }
+}
+
+/* (horizontal) tab styling */
+#tabbrowser-arrowscrollbox[orient="horizontal"] {
+  .tabbrowser-tab {
+    margin: 0 2px !important;
+  }
+}
