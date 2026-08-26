@@ -1,4 +1,0 @@
-spacefox.jar:
-% resource spacefox %./
-    modules/SpacefoxAboutNewTab.sys.mjs (modules/SpacefoxAboutNewTab.sys.mjs)
-    modules/SpacefoxResourceHost.sys.mjs (modules/SpacefoxResourceHost.sys.mjs)
