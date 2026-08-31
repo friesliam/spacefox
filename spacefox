@@ -54,7 +54,9 @@ class Utils:
 
     @staticmethod
     def is_dir_empty(dirname: Path):
-        return not dirname.exists() and any(dirname.iterdir())
+        if not dirname.exists():
+            return True
+        return not any(dirname.iterdir())
 
     @staticmethod
     def create_dir(dirname: Path):
@@ -118,15 +120,6 @@ class LocalConfigFile:
         if src_dir != "":
             LocalConfigFile.firefox_src_dir = SPACEFOX_ROOT / src_dir
 
-    @classmethod
-    def __getitem__(cls, key):
-        return cls.data[key]
-
-    # does not sync the firefox_src_dir value
-    @classmethod
-    def __setitem__(cls, key, val):
-        cls.data[key] = val
-
     @staticmethod
     def write():
         Utils.write_json_file(LocalConfigFile.data, LocalConfigFile.__filepath)
@@ -141,14 +134,6 @@ class PkgData:
     @staticmethod
     def load():
         PkgData.data = Utils.load_json_file(PkgData.__filepath)
-
-    @classmethod
-    def __getitem__(cls, key):
-        return cls.data[key]
-
-    @classmethod
-    def __setitem__(cls, key, val):
-        cls.data[key] = val
 
     @staticmethod
     def write():
@@ -192,17 +177,17 @@ def copysrc():
 
 def clone(tag=None):
     if tag is None:
-        tag = PkgData["firefox"]["release_tag"]
+        tag = PkgData.data["firefox"]["release_tag"]
     src_dir = Utils.firefox_src_dir_from_tag(tag)
     if src_dir is None:
         print("Invalid firefox release tag format; the tag should begin with 'FIREFOX_' and end with '_RELEASE'")
         sys.exit(1)
     if not Utils.is_dir_empty(src_dir):
-        Utils.ensure_continue(f"The directory {src_dir} is not empty; the contents will be overwritten; do you want to continue? (y/n)")
+        Utils.ensure_continue(f"The directory {src_dir} is not empty; the contents will be overwritten; do you want to continue? (y/n) ")
         shutil.rmtree(src_dir)
     Utils.create_dir(src_dir)
-    repo = PkgData["firefox"]["repository"]
-    spacefox_branch = PkgData["build"]["branch"]
+    repo = PkgData.data["firefox"]["repository"]
+    spacefox_branch = PkgData.data["build"]["branch"]
     Utils.cmd("git", "init", "-b", "main", cwd=src_dir)
     Utils.cmd("git", "remote", "add", "upstream", repo, cwd=src_dir)
     Utils.cmd("git", "fetch", "--depth", "1", "upstream", f"refs/tags/{tag}", cwd=src_dir)
@@ -213,12 +198,12 @@ def clone(tag=None):
     Utils.cmd("git", "config", "--unset", "core.fsMonitor", check=False, cwd=src_dir)
     # avoid revealing email address in commits or patches
     Utils.cmd("git", "config", "user.email", "contributor@spacefox.invalid", cwd=src_dir)
-    LocalConfigFile["paths"]["firefox_src_dir"] = str(src_dir.relative_to(SPACEFOX_ROOT))
+    LocalConfigFile.data["paths"]["firefox_src_dir"] = str(src_dir.relative_to(SPACEFOX_ROOT))
     LocalConfigFile.write()
 
 def patch():
-    patch_dir = PkgData["paths"]["patchfile_dir"]
-    ordering_list = Path(PkgData["paths"]["patchfile_ordering_file"])
+    patch_dir = PkgData.data["paths"]["patchfile_dir"]
+    ordering_list = Path(PkgData.data["paths"]["patchfile_ordering_file"])
     func = lambda filepath: SPACEFOX_ROOT / patch_dir / filepath
     patchfiles = Utils.parse_list_file(ordering_list, func)
     Utils.apply_patches(patchfiles)
@@ -236,7 +221,7 @@ def patch_abort():
         Utils.print_no_active_firefox_src_dir()
 
 def switch_src_dir(dirname: str):
-    LocalConfigFile["paths"]["firefox_src_dir"] = dirname
+    LocalConfigFile.data["paths"]["firefox_src_dir"] = dirname
     LocalConfigFile.write()
     print(f"Set the current firefox source directory to {dirname}")
 
@@ -277,6 +262,7 @@ def main(args: list[str]):
         # Builds the browser
         case ["build", "--full"]:
             LocalConfigFile.load()
+            PkgData.load()
             build_full()
 
         # Copies the src/ directory into the firefox source directory

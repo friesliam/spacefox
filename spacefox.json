@@ -3,7 +3,7 @@
     "version": "0.1.0",
     "firefox": {
         "repository": "https://github.com/mozilla-firefox/firefox.git",
-        "release_tag": "FIREFOX_153_0_4_RELEASE"
+        "release_tag": "FIREFOX_154_0_1_RELEASE"
     },
     "build": {
         "branch": "spacefox"
