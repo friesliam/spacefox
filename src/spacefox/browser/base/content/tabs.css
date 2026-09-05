@@ -1,0 +1,72 @@
+/* Background */
+body {
+    background: var(--sf-background-color) !important;
+}
+
+/* (vertical/horizontal) tab styling */
+#tabbrowser-arrowscrollbox {
+    --tab-min-height: max(33px, calc(1.7 * 1em)) !important; /* Override */
+    .tabbrowser-tab {
+        padding: 0 !important;
+        margin: 0 !important;
+        .tab-background {
+            border-radius: var(--sf-border-radius-pattern-sm) !important;
+            box-shadow: none !important;
+        }
+        .tab-close-button {
+            border-radius:
+                var(--border-radius-small) !important;
+        }
+    }
+    tab-group {
+        .tab-group-label-container {
+            .tab-group-label {
+                color: black !important;
+                border-radius: var(--border-radius-small) !important;
+            }
+        }
+    }
+}
+
+/* (vertical) tab styling */
+#tabbrowser-arrowscrollbox[orient="vertical"] {
+    .tab-group-line {
+        width: var(--sf-tab-group-line-thickness) !important;
+    }
+    tab-group {
+        .tab-group-overflow-count-container {
+            margin: 0 !important;
+            &::after {
+                width: var(--sf-tab-group-line-thickness) !important;
+            }
+        }
+    }
+}
+
+/* (horizontal) tab styling */
+#tabbrowser-arrowscrollbox[orient="horizontal"] {
+    .tabbrowser-tab {
+        margin: 0 2px !important;
+    }
+}
+
+/* New tab button */
+#tabs-newtab-button {
+    /* TODO: does not apply for horizontal tabs */
+    border-radius: var(--sf-border-radius-pattern-sm) !important;
+}
+
+/* Buttons */
+.button-background {
+    /* TODO: does not apply; check shadow dom */
+    border-radius: var(--sf-border-radius-pattern-sm) !important;
+}
+
+/* Toolbar buttons */
+toolbarbutton {
+    &,
+    & > .toolbarbutton-badge-stack,
+    image {
+        border-radius: var(--sf-border-radius-pattern-sm) !important;
+    }
+}

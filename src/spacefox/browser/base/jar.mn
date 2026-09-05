@@ -1,0 +1,5 @@
+browser.jar:
+%   content spacefox %content/ contentaccessible=yes
+    content/main.css (content/main.css)
+    content/main.js (content/main.js)
+    content/tabs.css (content/tabs.css)

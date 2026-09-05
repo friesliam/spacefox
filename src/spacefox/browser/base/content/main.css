@@ -1,0 +1,43 @@
+/* Imports */
+@import url("chrome://spacefox/content/tabs.css");
+
+/* Spacefox variables */
+:root {
+    --sf-background-color: #0d0c14;
+    --sf-background-color-hover: #181626;
+    --sf-background-color-active: #242138;
+    --sf-button-background-color-hover: var(--sf-background-color-hover);
+    --sf-button-background-color-active: var(--sf-background-color-active);
+
+    --sf-tab-group-line-thickness: 2px;
+
+    --sf-border-radius-pattern-sm:
+        var(--border-radius-small)
+        var(--border-radius-medium)
+        var(--border-radius-small)
+        var(--border-radius-small);
+}
+
+/* Override variables */
+:root {
+    /* Border Radius */
+    --border-radius-large: 12px !important;
+    --border-radius-medium: 7px !important;
+    --border-radius-small: 4px !important;
+    --border-radius-xsmall: 2px !important;
+
+    --panel-border-radius: var(--border-radius-large) !important;
+
+    --tab-outline: none !important;
+
+    --urlbar-background-background-color-focused: red !important;
+    --toolbar-background-color: var(--sf-background-color) !important;
+    --panel-background-color: var(--sf-background-color) !important;
+
+    --tab-background-color-hover: var(--sf-background-color-hover) !important;
+    --tab-background-color-selected: var(--sf-background-color-active) !important;
+
+    --button-background-color-hover: var(--sf-button-background-color-hover) !important;
+    --toolbarbutton-background-color-hover: var(--sf-button-background-color-hover) !important;
+    --toolbarbutton-background-color-active: var(--sf-button-background-color-active) !important;
+}
