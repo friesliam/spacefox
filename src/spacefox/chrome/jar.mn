@@ -1,5 +1,0 @@
-spacefox.jar:
-% content spacefox %content/
-    content/main.css (main.css)
-    content/main.js (main.js)
-    content/tabs.css (tabs.css)

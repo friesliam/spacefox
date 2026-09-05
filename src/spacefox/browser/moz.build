@@ -1,6 +1,5 @@
 DIRS += [
     "base",
-    "components",
 ]
 
 # These two lines are required so that the pref files apply after firefox.js
