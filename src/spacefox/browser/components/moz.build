@@ -1,5 +1,6 @@
 DIRS += [
     "newtab",
+    "profileinitializer",
 ]
 
 EXTRA_JS_MODULES += [
