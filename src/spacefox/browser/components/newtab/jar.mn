@@ -1,0 +1,3 @@
+spacefox.jar:
+%   resource spacefox %./
+    modules/SpacefoxAboutNewTab.sys.mjs (SpacefoxAboutNewTab.sys.mjs)

@@ -1,0 +1,11 @@
+DIRS += [
+    "newtab",
+]
+
+EXTRA_JS_MODULES += [
+    "SpacefoxGlue.sys.mjs"
+]
+
+EXTRA_COMPONENTS += [
+    "SpacefoxComponents.manifest",
+]

@@ -1,4 +1,3 @@
-import { SpacefoxResourceHost } from "resource://spacefox/modules/SpacefoxResourceHost.sys.mjs"; // TODO: temporary
 import { AboutNewTab } from "resource://app/modules/AboutNewTab.sys.mjs";
 
 const ABOUT_URL = "resource://spacefoxre/newtab/index.html";
@@ -13,8 +12,6 @@ export const SpacefoxAboutNewTab = {
     _newTabURL: ABOUT_URL,
 
     init() {
-        SpacefoxResourceHost.registerAll(); // TODO: temporary until a better spot is found
-
         Services.prefs.addObserver(NEWTAB_PREF, (subject, topic, data) => {
             this.onPrefAboutNewTabOverrideChange();
         });

@@ -1,0 +1,3 @@
+category app-startup resource://spacefox/startup/SpacefoxGlue.sys.mjs SpacefoxGlue.init
+
+category browser-before-ui-startup resource://spacefox/modules/SpacefoxResourceURIMapper.sys.mjs SpacefoxResourceURIMapper.registerSpacefoxre

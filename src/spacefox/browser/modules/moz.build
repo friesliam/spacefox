@@ -1,0 +1,7 @@
+EXTRA_JS_MODULES += [
+    "SpacefoxResourceURIMapper.sys.mjs",
+]
+
+JAR_MANIFESTS += [
+    "jar.mn",
+]

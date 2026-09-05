@@ -1,0 +1,3 @@
+spacefox.jar:
+%   resource spacefox %./
+    modules/SpacefoxResourceURIMapper.sys.mjs (SpacefoxResourceURIMapper.sys.mjs)

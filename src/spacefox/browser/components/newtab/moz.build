@@ -1,0 +1,5 @@
+EXTRA_JS_MODULES += [
+    "SpacefoxAboutNewTab.sys.mjs",
+]
+
+JAR_MANIFESTS += ["jar.mn"]

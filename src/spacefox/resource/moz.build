@@ -1,7 +1,0 @@
-DIRS += [
-    "modules",
-]
-
-JAR_MANIFESTS += [
-    "jar.mn",
-]
