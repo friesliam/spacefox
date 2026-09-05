@@ -1,0 +1,5 @@
+[tool.ruff.lint.per-file-ignores]
+"**/moz.build" = ["F821"]
+
+[tool.pyright]
+ignore = ["**/moz.build"]
