@@ -1,1 +1,3 @@
-console.log("[main.js] connected");
+{
+    Services.scriptloader.loadSubScript("chrome://spacefox/content/spacefox-sets.js", this);
+}
