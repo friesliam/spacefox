@@ -1,0 +1,36 @@
+From 098a479c40c947a403d510454b4c540309ad323e Mon Sep 17 00:00:00 2001
+From: Liam Fries <contributor@spacefox.invalid>
+Date: Sun, 6 Sep 2026 11:21:46 -0400
+Subject: [PATCH] Include spacefox.inc.xhtml in browser.xhtml
+
+---
+ browser/base/content/browser.xhtml       | 2 ++
+ browser/base/content/macWindow.inc.xhtml | 2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/browser/base/content/browser.xhtml b/browser/base/content/browser.xhtml
+index ba0c75360c..8a049280f0 100644
+--- a/browser/base/content/browser.xhtml
++++ b/browser/base/content/browser.xhtml
+@@ -156,6 +156,8 @@
+ 
+ #include fullscreen-and-pointerlock.inc.xhtml
+ 
++#include spacefox.inc.xhtml
++
+   <html:div id="a11y-announcement" role="alert"/>
+ 
+   <!-- Put it at the very end to make sure it's not covered by anything. -->
+diff --git a/browser/base/content/macWindow.inc.xhtml b/browser/base/content/macWindow.inc.xhtml
+index bf9c45905a..e8d4765d3a 100644
+--- a/browser/base/content/macWindow.inc.xhtml
++++ b/browser/base/content/macWindow.inc.xhtml
+@@ -35,3 +35,5 @@
+ # The entire main menubar is placed into browser-menubar.inc.xhtml, so that it
+ # can be shared with browser.xhtml.
+ #include browser-menubar.inc.xhtml
++
++#include spacefox.inc.xhtml
+-- 
+2.55.0
+

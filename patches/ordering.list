@@ -4,4 +4,4 @@ spacefox-build.patch
 about/newtab-pref.js.patch
 chrome/imports.xhtml.patch
 toolkit/xre/dirnames.patch
-base/content/browser-sets.patch
+base/content/browser.patch
