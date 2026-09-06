@@ -1,0 +1,97 @@
+From c110d1e3fd2f11e0281c54e185a52cd6c783ae40 Mon Sep 17 00:00:00 2001
+From: Liam Fries <contributor@spacefox.invalid>
+Date: Sat, 5 Sep 2026 14:48:31 -0400
+Subject: [PATCH] Rename Mozilla directory to Spacefox
+
+---
+ toolkit/xre/nsXREDirProvider.cpp | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/toolkit/xre/nsXREDirProvider.cpp b/toolkit/xre/nsXREDirProvider.cpp
+index dcce3335e1..7b1b92febd 100644
+--- a/toolkit/xre/nsXREDirProvider.cpp
++++ b/toolkit/xre/nsXREDirProvider.cpp
+@@ -339,16 +339,16 @@ static nsresult GetSystemParentDirectory(nsIFile** aFile) {
+   rv = GetOSXFolderType(kOnSystemDisk, kApplicationSupportFolderType,
+                         getter_AddRefs(localDir));
+   if (NS_SUCCEEDED(rv)) {
+-    rv = localDir->AppendNative("Mozilla"_ns);
++    rv = localDir->AppendNative("Spacefox"_ns);
+   }
+ #  else
+   constexpr auto dirname =
+ #    ifdef HAVE_USR_LIB64_DIR
+-      "/usr/lib64/mozilla"_ns
++      "/usr/lib64/spacefox"_ns
+ #    elif defined(__OpenBSD__) || defined(__FreeBSD__)
+-      "/usr/local/lib/mozilla"_ns
++      "/usr/local/lib/spacefox"_ns
+ #    else
+-      "/usr/lib/mozilla"_ns
++      "/usr/lib/spacefox"_ns
+ #    endif
+       ;
+   rv = NS_NewNativeLocalFile(dirname, getter_AddRefs(localDir));
+@@ -422,9 +422,9 @@ nsXREDirProvider::GetFile(const char* aProperty, bool* aPersistent,
+                                   /* aForceLegacy */ true);
+     NS_ENSURE_SUCCESS(rv, rv);
+ #  if defined(XP_MACOSX)
+-    rv = file->AppendNative("Mozilla"_ns);
++    rv = file->AppendNative("Spacefox"_ns);
+ #  else   // defined(XP_MACOSX)
+-    rv = file->AppendNative(".mozilla"_ns);
++    rv = file->AppendNative(".spacefox"_ns);
+ #  endif  // defined(XP_MACOSX)
+   }
+ #endif  // defined(XP_UNIX) || defined(XP_MACOSX)
+@@ -454,9 +454,9 @@ nsXREDirProvider::GetFile(const char* aProperty, bool* aPersistent,
+   else if (!strcmp(aProperty, XRE_SYS_SHARE_EXTENSION_PARENT_DIR)) {
+ #  ifdef ENABLE_SYSTEM_EXTENSION_DIRS
+ #    if defined(__OpenBSD__) || defined(__FreeBSD__)
+-    static const char* const sysLExtDir = "/usr/local/share/mozilla/extensions";
++    static const char* const sysLExtDir = "/usr/local/share/spacefox/extensions";
+ #    else
+-    static const char* const sysLExtDir = "/usr/share/mozilla/extensions";
++    static const char* const sysLExtDir = "/usr/share/spacefox/extensions";
+ #    endif
+     rv = NS_NewNativeLocalFile(nsDependentCString(sysLExtDir),
+                                getter_AddRefs(file));
+@@ -986,7 +986,7 @@ nsresult nsXREDirProvider::GetUpdateRootDir(nsIFile** aResult,
+             nsDependentCString(hasVendor ? GetAppVendor() : GetAppName())))) {
+       return NS_ERROR_FAILURE;
+     }
+-  } else if (NS_FAILED(localDir->AppendNative("Mozilla"_ns))) {
++  } else if (NS_FAILED(localDir->AppendNative("Spacefox"_ns))) {
+     return NS_ERROR_FAILURE;
+   }
+ 
+@@ -1284,7 +1284,7 @@ nsresult nsXREDirProvider::AppendSysUserExtensionPath(nsIFile* aFile) {
+ 
+ #if defined(XP_MACOSX) || defined(XP_WIN)
+ 
+-  static const char* const sXR = "Mozilla";
++  static const char* const sXR = "Spacefox";
+   rv = aFile->AppendNative(nsDependentCString(sXR));
+   NS_ENSURE_SUCCESS(rv, rv);
+ 
+@@ -1294,7 +1294,7 @@ nsresult nsXREDirProvider::AppendSysUserExtensionPath(nsIFile* aFile) {
+ 
+ #elif defined(XP_UNIX)
+ 
+-  static const char* const sXR = ".mozilla";
++  static const char* const sXR = ".spacefox";
+   rv = aFile->AppendNative(nsDependentCString(sXR));
+   NS_ENSURE_SUCCESS(rv, rv);
+ 
+@@ -1612,7 +1612,7 @@ nsresult nsXREDirProvider::AppendProfilePath(nsIFile* aFile, bool aLocal) {
+   // The parent of this directory is set in GetUserDataDirectoryHome
+   // XXX: handle gAppData->profile properly
+   // XXXsmaug ...and the rest of the profile creation!
+-  rv = aFile->AppendNative(nsDependentCString("mozilla"));
++  rv = aFile->AppendNative(nsDependentCString("spacefox"));
+   NS_ENSURE_SUCCESS(rv, rv);
+ #elif defined(XP_UNIX)
+   nsAutoCString folder;
+-- 
+2.55.0
+
